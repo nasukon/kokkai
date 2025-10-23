@@ -125,12 +125,14 @@
             .outerRadius(radius);
 
         // --- 3. 過半数ラインの描画 (静的) ---
-        // グラフは -Math.PI (-180度) から 0 (0度) まで
-        // 0議席 = -Math.PI
-        // 465議席 = 0
+        // グラフは -Math.PI (-180度) から 0 (0度) までの半円
+        // 全体の角度 (Angle Span) は Math.PI
+        const totalAngleSpan = 0 - (-Math.PI); // = Math.PI
         const majorityPercentage = MAJORITY_LINE_SEATS / TOTAL_SEATS;
-        // 角度を計算 (線形補間)
-        const majorityAngle = -Math.PI + (Math.PI * majorityPercentage);
+        
+        // 【修正点】 
+        // (開始角度) + (全体の角度 * 割合) で正確な角度を計算
+        const majorityAngle = -Math.PI + (totalAngleSpan * majorityPercentage);
 
         svg.append("line")
             .attr("x1", 0)
@@ -312,4 +314,3 @@
     </script>
 </body>
 </html>
-
