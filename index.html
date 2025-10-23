@@ -108,7 +108,7 @@
 
         const tooltip = d3.select(".d3-tooltip");
 
-        // パイレイアウト (半円: -90度から+90度... ではなく -180度から0度)
+        // パイレイアウト (半円: -180度から0度)
         const pie = d3.pie()
             .value(d => d.seats)
             .sort(null) // データの順序（＝選択順）を維持
@@ -125,20 +125,15 @@
             .outerRadius(radius);
 
         // --- 3. 過半数ラインの描画 (静的) ---
-        // グラフは -Math.PI (-180度) から 0 (0度) までの半円
-        // 全体の角度 (Angle Span) は Math.PI
         const totalAngleSpan = 0 - (-Math.PI); // = Math.PI
         const majorityPercentage = MAJORITY_LINE_SEATS / TOTAL_SEATS;
-        
-        // 【修正点】 
-        // (開始角度) + (全体の角度 * 割合) で正確な角度を計算
         const majorityAngle = -Math.PI + (totalAngleSpan * majorityPercentage);
 
         svg.append("line")
             .attr("x1", 0)
             .attr("y1", 0)
             .attr("x2", Math.cos(majorityAngle) * radius * 1.05)
-            .attr("y2", Math.sin(majorityAngle) * radius * 1.05) // sin(-90度)は -1
+            .attr("y2", Math.sin(majorityAngle) * radius * 1.05) 
             .attr("stroke", "#F56565") // Red-500
             .attr("stroke-width", 2)
             .attr("stroke-dasharray", "5,5");
@@ -184,8 +179,14 @@
         
         // アニメーション用Tween関数
         function arcTween(d) {
-            const i = d3.interpolate(this._current, d);
-            this._current = i(0);
+            // 'this._current' は、この要素の現在(またはアニメーション開始時)の角度データ
+            // 'd' は、新しい(アニメーション終了時)の角度データ
+            
+            // this._current が未定義の場合(初期化など)は、d の状態から開始する
+            const i = d3.interpolate(this._current || d, d); 
+            
+            this._current = d; // <-- ★修正点: 次のトランジションのために、終了状態(d)を保存する
+            
             return function(t) {
                 return arc(i(t));
             };
@@ -193,7 +194,6 @@
         
         // ツールチップ用ハンドラ
         function handleMouseOver(event, d) {
-            // 「残り議席」ではツールチップを出さない
             if (d.data.id === 'remaining') return;
             
             d3.select(this)
@@ -210,7 +210,6 @@
                 .style("left", (event.pageX + 10) + "px");
         }
         function handleMouseOut(event, d) {
-            // 「残り議席」では何もしない
             if (d.data.id === 'remaining') return;
 
             d3.select(this)
@@ -236,14 +235,11 @@
                 }
             });
 
-            // 残り議席（未選択）のデータを計算
             const remainingSeats = TOTAL_SEATS - totalSelectedSeats;
-            // 「残り議席」が0未満にならないように
             const finalRemainingSeats = Math.max(0, remainingSeats);
             
             const dynamicData = [
                 ...selectedParties, 
-                // 「残り議席」を必ず末尾に追加
                 { id: 'remaining', name: '残り議席', seats: finalRemainingSeats, color: '#2D3748' } // bg-gray-700
             ];
 
@@ -302,7 +298,7 @@
             } else {
                 statusDisplay.textContent = `過半数 (233議席) 未達`;
                 resultDisplay.className = "text-5xl font-bold text-yellow-400";
-                statusDisplay.className = "text-xl font-semibold mt-2 text-yellow-400";
+                resultDisplay.className = "text-xl font-semibold mt-2 text-yellow-400";
                 resultCard.classList.remove("border-green-400");
                 resultCard.classList.add("border-yellow-400");
             }
