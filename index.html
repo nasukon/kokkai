@@ -160,8 +160,8 @@
                 .attr("stroke-dasharray", "5,5");
 
             group.append("text")
-                .attr("x", Math.cos(majorityAngle) * radius * CONFIG.CHART.majorityTextRatio)
-                .attr("y", Math.sin(majorityAngle) * radius * CONFIG.CHART.majorityTextRatio - 20)
+                .attr("x", Math.cos(majorityAngle) * textR)
+                .attr("y", Math.sin(majorityAngle) * textR - 8)
                 .attr("text-anchor", "middle")
                 .attr("fill", "#F56565")
                 .style("font-size", "13px")
