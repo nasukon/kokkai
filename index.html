@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>衆議院 会派別議席数シミュレーター</title>
+    <title>衆議院 会派別議席数シミュレーター (半円版)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- D3.js v7 CDN -->
@@ -46,8 +46,9 @@
         <div class="flex flex-col md:flex-row gap-6 md:gap-8">
 
             <!-- 左側: グラフコンテナ -->
-            <div class="md:w-1/2 flex flex-col items-center justify-center bg-gray-900 p-4 rounded-lg shadow-inner min-h-[300px] md:min-h-[450px]">
-                <div id="chart-container"></div>
+            <div class="md:w-1/2 flex flex-col items-center justify-center bg-gray-900 p-4 rounded-lg shadow-inner min-h-[300px] md:min-h-[300px] overflow-hidden">
+                <!-- SVGの高さを調整 -->
+                <div id="chart-container" class="w-full"></div>
                 <div class="d3-tooltip"></div>
             </div>
 
@@ -72,116 +73,84 @@
     </div>
 
     <script>
-        // --- 1. データ定義 (CSVファイルに基づく) ---
-        // CSV `会派別所属議員数 - 衆議院.csv` から "合計", "欠員", 議席数"-" の行を除外したデータ
+        // --- 1. データ定義 ---
         const partyData = [
-            { name: '自由民主党・無所属の会', seats: 196, color: '#3182CE' }, // Blue
-            { name: '立憲民主党・無所属 (※)', seats: 148, color: '#48BB78' }, // Green
-            { name: '日本維新の会 (※)', seats: 35, color: '#F56565' }, // Red
-            { name: '公明党', seats: 24, color: '#ECC94B' }, // Yellow
-            { name: '国民民主党・無所属クラブ (※)', seats: 27, color: '#ED8936' }, // Orange
-            { name: '日本共産党', seats: 8, color: '#9F7AEA' }, // Purple
-            { name: 'れいわ新選組', seats: 9, color: '#F687B3' }, // Pink
-            { name: '有志の会', seats: 4, color: '#4FD1C5' }, // Teal
-            { name: '参政党', seats: 3, color: '#A0AEC0' }, // Gray-500
-            { name: '改革の会', seats: 3, color: '#718096' }, // Gray-600
-            { name: '減税保守こども', seats: 3, color: '#CBD5E0' }, // Gray-300
-            { name: '無所属 (※)', seats: 5, color: '#E2E8F0' }  // Gray-200
+            { id: 'jimin', name: '自由民主党・無所属の会', seats: 196, color: '#3182CE' },
+            { id: 'rikken', name: '立憲民主党・無所属 (※)', seats: 148, color: '#48BB78' },
+            { id: 'ishin', name: '日本維新の会 (※)', seats: 35, color: '#F56565' },
+            { id: 'komei', name: '公明党', seats: 24, color: '#ECC94B' },
+            { id: 'kokumin', name: '国民民主党・無所属クラブ (※)', seats: 27, color: '#ED8936' },
+            { id: 'kyosan', name: '日本共産党', seats: 8, color: '#9F7AEA' },
+            { id: 'reiwa', name: 'れいわ新選組', seats: 9, color: '#F687B3' },
+            { id: 'yushi', name: '有志の会', seats: 4, color: '#4FD1C5' },
+            { id: 'sansei', name: '参政党', seats: 3, color: '#A0AEC0' },
+            { id: 'kaikaku', name: '改革の会', seats: 3, color: '#718096' },
+            { id: 'genzei', name: '減税保守こども', seats: 3, color: '#CBD5E0' },
+            { id: 'mushozoku', name: '無所属 (※)', seats: 5, color: '#E2E8F0' }
         ];
 
         const TOTAL_SEATS = 465;
         const MAJORITY_LINE_SEATS = 233;
 
         // --- 2. D3.js グラフ設定 ---
-        const width = 400;
-        const height = 400;
+        const width = 450;
+        const height = 250; // 半円なので高さを低く
         const margin = 20;
-        const radius = Math.min(width, height) / 2 - margin;
+        const radius = Math.min(width / 2, height) - margin;
 
         const svg = d3.select("#chart-container")
             .append("svg")
-            .attr("width", width)
-            .attr("height", height)
+            .attr("viewBox", `0 0 ${width} ${height + margin}`) // viewBoxでレスポンシブに
+            .attr("preserveAspectRatio", "xMidYMax meet")
             .append("g")
-            .attr("transform", `translate(${width / 2}, ${height / 2})`);
+            // SVGの下辺中央を半円の中心にする
+            .attr("transform", `translate(${width / 2}, ${height})`);
 
-        // ツールチップの選択
         const tooltip = d3.select(".d3-tooltip");
 
-        // パイレイアウト
+        // パイレイアウト (半円: -90度から+90度... ではなく -180度から0度)
         const pie = d3.pie()
             .value(d => d.seats)
-            .sort(null); // データ配列の順序を維持
+            .sort(null) // データの順序（＝選択順）を維持
+            .startAngle(-Math.PI) // 左端 (9時の位置)
+            .endAngle(0);         // 右端 (3時の位置)
 
         // アーク（円弧）ジェネレータ
         const arc = d3.arc()
-            .innerRadius(radius * 0.5) // ドーナツグラフにする
+            .innerRadius(radius * 0.5)
             .outerRadius(radius * 0.9);
         
-        // ホバー時用のアーク
         const arcHover = d3.arc()
             .innerRadius(radius * 0.5)
             .outerRadius(radius);
 
-        // --- 3. グラフ描画 ---
-        const arcs = svg.selectAll("path")
-            .data(pie(partyData))
-            .enter()
-            .append("path")
-            .attr("class", "party-slice") // シミュレーションで選択するためのクラス
-            .attr("d", arc)
-            .attr("fill", d => d.data.color)
-            .attr("stroke", "#1a202c") // bg-gray-900
-            .style("stroke-width", "2px")
-            .style("opacity", 0.3) // 初期状態ではすべて非選択（薄く表示）
-            .style("transition", "opacity 0.3s, transform 0.2s")
-            // ツールチップイベント
-            .on("mouseover", function(event, d) {
-                d3.select(this)
-                    .transition().duration(200)
-                    .attr("d", arcHover);
-                tooltip
-                    .style("visibility", "visible")
-                    .style("opacity", 1)
-                    .html(`<strong>${d.data.name}</strong><br>${d.data.seats} 議席`);
-            })
-            .on("mousemove", function(event) {
-                tooltip
-                    .style("top", (event.pageY - 10) + "px")
-                    .style("left", (event.pageX + 10) + "px");
-            })
-            .on("mouseout", function() {
-                d3.select(this)
-                    .transition().duration(200)
-                    .attr("d", arc);
-                tooltip
-                    .style("visibility", "hidden")
-                    .style("opacity", 0);
-            });
-
-        // --- 4. 過半数ラインの描画 ---
-        const majorityAngle = (MAJORITY_LINE_SEATS / TOTAL_SEATS) * 2 * Math.PI - (Math.PI / 2);
+        // --- 3. 過半数ラインの描画 (静的) ---
+        // グラフは -Math.PI (-180度) から 0 (0度) まで
+        // 0議席 = -Math.PI
+        // 465議席 = 0
+        const majorityPercentage = MAJORITY_LINE_SEATS / TOTAL_SEATS;
+        // 角度を計算 (線形補間)
+        const majorityAngle = -Math.PI + (Math.PI * majorityPercentage);
 
         svg.append("line")
             .attr("x1", 0)
             .attr("y1", 0)
             .attr("x2", Math.cos(majorityAngle) * radius * 1.05)
-            .attr("y2", Math.sin(majorityAngle) * radius * 1.05)
+            .attr("y2", Math.sin(majorityAngle) * radius * 1.05) // sin(-90度)は -1
             .attr("stroke", "#F56565") // Red-500
             .attr("stroke-width", 2)
             .attr("stroke-dasharray", "5,5");
 
         svg.append("text")
             .attr("x", Math.cos(majorityAngle) * radius * 1.1)
-            .attr("y", Math.sin(majorityAngle) * radius * 1.1)
+            .attr("y", Math.sin(majorityAngle) * radius * 1.1 - 5) // 少し上に
             .attr("text-anchor", "middle")
-            .attr("alignment-baseline", "middle")
             .attr("fill", "#F56565")
-            .style("font-size", "12px")
+            .style("font-size", "14px")
             .style("font-weight", "600")
             .text("過半数 (233)");
 
-        // --- 5. シミュレーションUI (コントロール) の生成 ---
+        // --- 4. シミュレーションUI (コントロール) の生成 ---
         const controlsContainer = document.getElementById("controls-container");
         const resultDisplay = document.getElementById("total-seats-display");
         const statusDisplay = document.getElementById("majority-status");
@@ -190,13 +159,13 @@
         partyData.forEach((party, index) => {
             const label = document.createElement("label");
             label.className = "flex items-center p-3 bg-gray-800 rounded-md hover:bg-gray-600 transition duration-200 cursor-pointer";
-            label.style.color = party.color; // ラベルテキストに色を適用
+            label.style.color = party.color; 
 
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.className = "party-checkbox h-5 w-5 rounded border-gray-500 text-gray-500 focus:ring-0 focus:ring-offset-0";
-            checkbox.dataset.index = index; // D3のデータインデックスと同期
-            checkbox.style.color = party.color; // チェックボックスの色
+            checkbox.dataset.id = party.id; // D3のデータキー
+            checkbox.style.color = party.color; 
 
             const text = document.createElement("span");
             text.className = "ml-3 font-semibold";
@@ -206,27 +175,120 @@
             label.appendChild(text);
             controlsContainer.appendChild(label);
 
-            // イベントリスナーを追加
             checkbox.addEventListener("change", updateSimulation);
         });
 
-        // --- 6. シミュレーション更新ロジック ---
+        // --- 5. グラフ更新関数 ---
+        
+        // アニメーション用Tween関数
+        function arcTween(d) {
+            const i = d3.interpolate(this._current, d);
+            this._current = i(0);
+            return function(t) {
+                return arc(i(t));
+            };
+        }
+        
+        // ツールチップ用ハンドラ
+        function handleMouseOver(event, d) {
+            // 「残り議席」ではツールチップを出さない
+            if (d.data.id === 'remaining') return;
+            
+            d3.select(this)
+                .transition().duration(200)
+                .attr("d", arcHover);
+            tooltip
+                .style("visibility", "visible")
+                .style("opacity", 1)
+                .html(`<strong>${d.data.name}</strong><br>${d.data.seats} 議席`);
+        }
+        function handleMouseMove(event) {
+            tooltip
+                .style("top", (event.pageY - 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+        }
+        function handleMouseOut(event, d) {
+            // 「残り議席」では何もしない
+            if (d.data.id === 'remaining') return;
+
+            d3.select(this)
+                .transition().duration(200)
+                .attr("d", arc);
+            tooltip
+                .style("visibility", "hidden")
+                .style("opacity", 0);
+        }
+
+        // --- 6. シミュレーション更新ロジック (D3 General Update Pattern) ---
         function updateSimulation() {
             let totalSelectedSeats = 0;
-            const selectedIndices = new Set();
+            const selectedParties = [];
 
-            // チェックボックスの状態を読み取り、合計議席を計算
+            // チェックボックスの状態を読み取り、データ配列を作成
             document.querySelectorAll(".party-checkbox:checked").forEach(cb => {
-                const index = parseInt(cb.dataset.index, 10);
-                selectedIndices.add(index);
-                totalSelectedSeats += partyData[index].seats;
+                const partyId = cb.dataset.id;
+                const party = partyData.find(p => p.id === partyId);
+                if (party) {
+                    selectedParties.push(party);
+                    totalSelectedSeats += party.seats;
+                }
             });
 
-            // グラフの不透明度を更新
-            svg.selectAll(".party-slice")
-                .style("opacity", (d, i) => selectedIndices.has(i) ? 1.0 : 0.2);
+            // 残り議席（未選択）のデータを計算
+            const remainingSeats = TOTAL_SEATS - totalSelectedSeats;
+            // 「残り議席」が0未満にならないように
+            const finalRemainingSeats = Math.max(0, remainingSeats);
+            
+            const dynamicData = [
+                ...selectedParties, 
+                // 「残り議席」を必ず末尾に追加
+                { id: 'remaining', name: '残り議席', seats: finalRemainingSeats, color: '#2D3748' } // bg-gray-700
+            ];
 
-            // 結果表示を更新
+            // --- D3 Update Pattern ---
+            const pieData = pie(dynamicData);
+
+            svg.selectAll("path.party-slice")
+                .data(pieData, d => d.data.id) // idをキーとしてデータを結合
+                .join(
+                    // Enter: 新しく追加された要素
+                    enter => enter.append("path")
+                        .attr("class", "party-slice")
+                        .attr("fill", d => d.data.color)
+                        .attr("stroke", "#1a202c")
+                        .style("stroke-width", "2px")
+                        .on("mouseover", handleMouseOver)
+                        .on("mousemove", handleMouseMove)
+                        .on("mouseout", handleMouseOut)
+                        .each(function(d) {
+                            // アニメーションの開始状態を保存
+                            this._current = { ...d, startAngle: d.startAngle, endAngle: d.startAngle };
+                        })
+                        .transition()
+                        .duration(750)
+                        .attrTween("d", arcTween),
+                    
+                    // Update: 既存の要素 (角度が変わる)
+                    update => update
+                        .transition()
+                        .duration(750)
+                        .attrTween("d", arcTween),
+                        
+                    // Exit: 不要になった要素 (チェックを外した会派)
+                    exit => exit
+                        .transition()
+                        .duration(500)
+                        .attrTween("d", function(d) {
+                            // 畳んで消えるアニメーション
+                            const i = d3.interpolate(d, { ...d, endAngle: d.startAngle });
+                            return function(t) {
+                                return arc(i(t));
+                            };
+                        })
+                        .remove()
+                );
+
+            // --- 結果表示を更新 ---
             resultDisplay.textContent = `${totalSelectedSeats} 議席`;
 
             if (totalSelectedSeats >= MAJORITY_LINE_SEATS) {
@@ -244,9 +306,10 @@
             }
         }
         
-        // 初期状態を更新（0議席）
+        // 初期状態（0議席）でグラフを描画
         updateSimulation();
 
     </script>
 </body>
 </html>
+
