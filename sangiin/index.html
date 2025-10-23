@@ -288,6 +288,9 @@
 
             // 結果表示を更新
             updateResultDisplay(totalSelectedSeats);
+            // スライスの後に再描画して常に前面に出す
+            drawMajorityLine();
+            svg.select('#majority-group').raise();
         }
 
         function updateResultDisplay(totalSeats) {
