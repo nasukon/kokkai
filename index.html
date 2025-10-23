@@ -154,7 +154,7 @@
 
             svg.append("text")
                 .attr("x", Math.cos(majorityAngle) * radius * CONFIG.CHART.majorityTextRatio)
-                .attr("y", Math.sin(majorityAngle) * radius * CONFIG.CHART.majorityTextRatio - 5)
+                .attr("y", Math.sin(majorityAngle) * radius * CONFIG.CHART.majorityTextRatio - 20)
                 .attr("text-anchor", "middle")
                 .attr("fill", "#F56565")
                 .style("font-size", "13px")
@@ -162,7 +162,6 @@
                 .text(`過半数 (${CONFIG.MAJORITY_SEATS})`);
         }
 
-        drawMajorityLine();
 
         // ========== UIコントロール生成 ==========
         const controlsContainer = document.getElementById("controls-container");
@@ -310,7 +309,7 @@
             resultCard.classList.remove('border-yellow-400', 'border-green-400');
             resultCard.classList.add(`border-${displayColor}-400`);
         }
-
+        drawMajorityLine();
         // 初期化
         updateSimulation();
     </script>
