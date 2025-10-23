@@ -13,9 +13,9 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+        /* チェックボックスの見た目は必要に応じて戻してください */
         .party-checkbox:checked {
             background-color: currentColor;
-            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
         }
         .d3-tooltip {
             position: absolute;
@@ -79,7 +79,7 @@
                 outerRadiusRatio: 0.9,
                 hoverRadiusRatio: 1.0,
                 majorityLineRatio: 1.05,
-                majorityTextRatio: 1.15
+                majorityTextRatio: 1.18
             },
             ANIMATION: {
                 enter: 750,
@@ -120,7 +120,6 @@
         const tooltip = d3.select(".d3-tooltip");
 
         // パイレイアウト (上向きの半円: 左端から右端へ)
-        // -π/2（上端）から π/2（上端を経由して下端）の範囲
         const pie = d3.pie()
             .value(d => d.seats)
             .sort(null)
@@ -136,30 +135,66 @@
             .innerRadius(radius * innerRadiusRatio)
             .outerRadius(radius * hoverRadiusRatio);
 
-        // ========== 過半数ライン描画 ==========
+        // ========== 過半数ライン描画 (波線) ==========
+        // 波線とテキストをまとめるグループを作成（描画順は後で raise() して制御）
+        svg.append('g').attr('id', 'majority-group');
+
         function drawMajorityLine() {
             const totalAngleSpan = Math.PI; // 半円の角度範囲
             const majorityPercentage = CONFIG.MAJORITY_SEATS / CONFIG.TOTAL_SEATS;
-            // 90度左に回転: -Math.PI/2 を引く
-            const majorityAngle = -Math.PI / 2 + (totalAngleSpan * majorityPercentage) - Math.PI / 2;
+            const majorityAngle = -Math.PI / 2 + (totalAngleSpan * majorityPercentage);
 
-            svg.append("line")
-                .attr("x1", 0)
-                .attr("y1", 0)
-                .attr("x2", Math.cos(majorityAngle) * radius * CONFIG.CHART.majorityLineRatio)
-                .attr("y2", Math.sin(majorityAngle) * radius * CONFIG.CHART.majorityLineRatio)
-                .attr("stroke", "#F56565")
-                .attr("stroke-width", 2)
-                .attr("stroke-dasharray", "5,5");
+            const group = svg.select('#majority-group');
+            group.selectAll('*').remove();
 
-            svg.append("text")
-                .attr("x", Math.cos(majorityAngle) * radius * CONFIG.CHART.majorityTextRatio)
-                .attr("y", Math.sin(majorityAngle) * radius * CONFIG.CHART.majorityTextRatio - 20)
-                .attr("text-anchor", "middle")
-                .attr("fill", "#F56565")
-                .style("font-size", "13px")
-                .style("font-weight", "600")
+            // 波線を作るためのパラメータ
+            const rStart = radius * innerRadiusRatio;
+            const rEnd = radius * CONFIG.CHART.majorityLineRatio;
+            const samples = 60; // サンプル数（波の滑らかさ）
+            const amp = 6; // 波の振幅（ピクセル）
+            const freq = 0.12; // 波の周波数
+
+            const points = d3.range(samples + 1).map(i => {
+                const t = i / samples;
+                const r = rStart + (rEnd - rStart) * t;
+                // 基準点（半径方向）
+                const bx = Math.cos(majorityAngle) * r;
+                const by = Math.sin(majorityAngle) * r;
+                // 法線方向（角度 + 90deg）
+                const nx = Math.cos(majorityAngle + Math.PI / 2);
+                const ny = Math.sin(majorityAngle + Math.PI / 2);
+                // 正弦でオフセット
+                const offset = Math.sin(t * Math.PI * 2 * freq * samples) * amp;
+                return [bx + nx * offset, by + ny * offset];
+            });
+
+            const line = d3.line().curve(d3.curveNatural);
+
+            group.append('path')
+                .attr('d', line(points))
+                .attr('fill', 'none')
+                .attr('stroke', '#F56565')
+                .attr('stroke-width', 2)
+                .attr('stroke-linecap', 'round')
+                .attr('pointer-events', 'none');
+
+            // 過半数テキストをアークの外側上部に表示
+            const textR = radius * CONFIG.CHART.majorityTextRatio;
+            const tx = Math.cos(majorityAngle) * textR;
+            const ty = Math.sin(majorityAngle) * textR - 8; // 少し上に寄せる
+
+            group.append('text')
+                .attr('x', tx)
+                .attr('y', ty)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#F56565')
+                .style('font-size', '13px')
+                .style('font-weight', '700')
+                .style('pointer-events', 'none')
                 .text(`過半数 (${CONFIG.MAJORITY_SEATS})`);
+
+            // 常に最前面に表示する
+            group.raise();
         }
 
 
@@ -291,6 +326,10 @@
 
             // 結果表示を更新
             updateResultDisplay(totalSelectedSeats);
+
+            // 過半数ラインとテキストを再描画して常に前面に出す
+            drawMajorityLine();
+            svg.select('#majority-group').raise();
         }
 
         function updateResultDisplay(totalSeats) {
@@ -309,7 +348,7 @@
             resultCard.classList.remove('border-yellow-400', 'border-green-400');
             resultCard.classList.add(`border-${displayColor}-400`);
         }
-        drawMajorityLine();
+
         // 初期化
         updateSimulation();
     </script>
