@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>将棋棋譜アニメーター</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            touch-action: manipulation; /* disable double-tap zoom on mobile */
+        }
+        .shogi-board {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(9, 1fr); /* 升目を正方形に保つため追加 */
+            border: 2px solid #8B4513; /* 濃い茶色 */
+            background-color: #F5DEB3; /* 小麦色 */
+            aspect-ratio: 1 / 1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .board-label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #555;
+            font-weight: 600;
+        }
+        .board-label.suji { /* 筋 1-9 */
+            writing-mode: horizontal-tb;
+        }
+        .board-label.dan { /* 段 一-九 */
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+        }
+        .square {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            border: 1px solid #D2B48C; /* 薄い茶色 */
+            box-sizing: border-box;
+            position: relative;
+        }
+        .piece {
+            font-size: clamp(1.5vw, 3.5vmin, 2.5rem); /* レスポンシブなフォントサイズ */
+            font-weight: 700;
+            color: #000;
+            cursor: default;
+            user-select: none;
+            line-height: 1;
+            padding: 2px;
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+        .piece.gote {
+            transform: rotate(180deg);
+        }
+        .piece.promoted {
+            color: #B22222; /* 駒の成り色 (赤) */
+        }
+        .hand {
+            background-color: #EEE8AA; /* 薄い黄色 */
+            border: 1px solid #8B4513;
+            min-height: 60px;
+            padding: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            gap: 4px;
+        }
+        .hand-piece {
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: #F5DEB3;
+            border: 1px solid #D2B48C;
+            border-radius: 4px;
+            padding: 2px 4px;
+            white-space: nowrap;
+        }
+        .hand-piece .count {
+            font-size: 0.8rem;
+            color: #333;
+            margin-left: 2px;
+        }
+        .gote .hand-piece {
+            transform: rotate(180deg);
+        }
+        .highlight {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 0, 0.5); /* 黄色のハイライト */
+            z-index: 5;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.5; }
+        }
+        .control-btn {
+            transition: all 0.15s ease-in-out;
+        }
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .control-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">将棋棋譜アニメーター</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-center">
+            
+            <!-- Gote (後手) Hand -->
+            <div class="md:col-start-3 md:row-start-1">
+                <div class="flex justify-between items-center mb-1 px-1">
+                    <span class="font-semibold text-gray-700">☖ 後手</span>
+                </div>
+                <div id="gote-hand" class="hand gote rounded-lg shadow-inner"></div>
+            </div>
+            
+            <!-- Board -->
+            <div class="md:col-start-2 md:row-start-1 md:row-span-3 flex justify-center items-center">
+                <div class="w-full max-w-lg mx-auto">
+                    <!-- Suji Labels (1-9) -->
+                    <!-- ラッパーをflexにし、スペーサーを追加して段ラベルと揃える -->
+                    <div class="flex">
+                        <div id="suji-labels" class="grid grid-cols-9 flex-1">
+                            <!-- JSで生成されます -->
+                        </div>
+                        <div class="w-[1.5em] pl-1"></div> <!-- 段ラベル用スペーサー -->
+                    </div>
+                    
+                    <!-- pr-[1.5em] を親FLEXから削除し、shogi-board を flex-1 に変更 -->
+                    <div class="flex">
+                        <div id="shogi-board" class="shogi-board flex-1 rounded-md">
+                            <!-- 81 squares generated by JS -->
+                        </div>
+                        <!-- Dan Labels (一-九) -->
+                        <!-- v-for を削除し、id を追加 -->
+                        <div id="dan-labels" class="flex flex-col w-[1.5em] pl-1">
+                            <!-- JSで生成されます -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sente (先手) Hand -->
+            <div class="md:col-start-1 md:row-start-3">
+                <div class="flex justify-between items-center mb-1 px-1">
+                    <span class="font-semibold text-gray-700">☗ 先手</span>
+                </div>
+                <div id="sente-hand" class="hand rounded-lg shadow-inner"></div>
+            </div>
+
+        </div>
+
+        <!-- Controls and Info -->
+        <div class="max-w-lg mx-auto mt-6 bg-white p-4 rounded-lg shadow-md">
+            <div class="flex justify-between items-center mb-3">
+                <span class="font-semibold text-gray-700">再生コントロール</span>
+                <span id="move-counter" class="text-sm text-gray-500">0 / 89 手</span>
+            </div>
+            <div id="current-move" class="text-center font-bold text-xl md:text-2xl text-blue-800 h-10 mb-4 flex items-center justify-center">
+                開始
+            </div>
+            <div classs="grid grid-cols-3 gap-3">
+                <button id="reset-btn" class="control-btn w-full bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">
+                    リセット
+                </button>
+                <button id="prev-btn" class="control-btn w-full bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md" disabled>
+                    戻る
+                </button>
+                <button id="next-btn" class="control-btn w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">
+                    次へ
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        // --- 定数 ---
+        const SENTE = 0; // 先手
+        const GOTE = 1; // 後手
+
+        // 駒の内部表現
+        const PIECES = {
+            FU: '歩', KY: '香', KE: '桂', GI: '銀', KI: '金', KA: '角', HI: '飛', OU: '玉',
+            TO: 'と', NY: '杏', NK: '圭', NG: '全', UM: '馬', RY: '竜'
+        };
+
+        // 駒の初期配置 (0:SENTE, 1:GOTE)
+        const INITIAL_BOARD = [
+            [{p: 'KY', pl: GOTE}, {p: 'KE', pl: GOTE}, {p: 'GI', pl: GOTE}, {p: 'KI', pl: GOTE}, {p: 'OU', pl: GOTE}, {p: 'KI', pl: GOTE}, {p: 'GI', pl: GOTE}, {p: 'KE', pl: GOTE}, {p: 'KY', pl: GOTE}],
+            [null, {p: 'HI', pl: GOTE}, null, null, null, null, null, {p: 'KA', pl: GOTE}, null],
+            [{p: 'FU', pl: GOTE}, {p: 'FU', pl: GOTE}, {p: 'FU', pl: GOTE}, {p: 'FU', pl: GOTE}, {p: 'FU', pl: GOTE}, {p: 'FU', pl: GOTE}, {p: 'FU', pl: GOTE}, {p: 'FU', pl: GOTE}, {p: 'FU', pl: GOTE}],
+            [null, null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null, null],
+            [null, null, null, null, null, null, null, null, null],
+            [{p: 'FU', pl: SENTE}, {p: 'FU', pl: SENTE}, {p: 'FU', pl: SENTE}, {p: 'FU', pl: SENTE}, {p: 'FU', pl: SENTE}, {p: 'FU', pl: SENTE}, {p: 'FU', pl: SENTE}, {p: 'FU', pl: SENTE}, {p: 'FU', pl: SENTE}],
+            [null, {p: 'KA', pl: SENTE}, null, null, null, null, null, {p: 'HI', pl: SENTE}, null],
+            [{p: 'KY', pl: SENTE}, {p: 'KE', pl: SENTE}, {p: 'GI', pl: SENTE}, {p: 'KI', pl: SENTE}, {p: 'OU', pl: SENTE}, {p: 'KI', pl: SENTE}, {p: 'GI', pl: SENTE}, {p: 'KE', pl: SENTE}, {p: 'KY', pl: SENTE}]
+        ];
+        
+        // --- 棋譜データ ---
+        // ユーザー提供の棋譜文字列
+        const KIFU_TEXT = [
+            "☗2六歩", "☖8四歩", "☗2五歩", "☖8五歩", "☗7八金", "☖3二金", "☗3八銀", "☖7二銀", 
+            "☗9六歩", "☖1四歩", "☗1六歩", "☖9四歩", "☗6八玉", "☖5二玉", "☗7六歩", "☖8六歩", 
+            "☗同　歩", "☖同　飛", "☗2四歩", "☖同　歩", "☗同　飛", "☖2三歩", "☗2六飛", "☖3四歩", 
+            "☗8七歩", "☖8四飛", "☗3六歩", "☖7四歩", "☗3五歩", "☖7五歩", "☗同　歩", "☖3五歩", 
+            "☗8六飛", "☖8五歩", "☗2六飛", "☖3三桂", "☗3七銀", "☖7三桂", "☗4六銀", "☖9五歩", 
+            "☗同　歩", "☖6五桂", "☗5八金", "☖9七歩", "☗同　香", "☖8六歩", "☗同　歩", "☖同　飛", 
+            "☗8七歩", "☖7六飛", "☗7七桂", "☖5七桂成", "☗同　金", "☖9六歩", "☗5四歩", "☖同　歩", 
+            "☗5三歩", "☖5一玉", "☗6六金", "☖9七歩成", "☗7六金", "☖8八と", "☗8四桂", "☖7三銀", 
+            "☗8一飛", "☖7一歩", "☗7四歩", "☖8四銀", "☗同飛成", "☖4二金", "☗5二銀", "☖同金寄", 
+            "☗同歩成", "☖同　金", "☗5三歩", "☖5六桂", "☗6九玉", "☖6八香", "☗同　銀", "☖7八と", 
+            "☗同　玉", "☖5三金", "☗5七銀上", "☖5九角", "☗2三飛成", "☖4五桂", "☗8一竜", "☖5七桂成", 
+            "☗同　銀", "☖7二金", "☗7三歩成", "☖6九銀", "☗8八玉", "☖9五香", "☗3三歩", "☖6八桂成", 
+            "☗6一金"
+        ];
+
+        // 内部的な手(move)の命令セット
+        // [fromY, fromX, toY, toX, promote, isDrop, piece]
+        // 座標は (y, x) で [0,0] が 9一、[8,8] が 1九
+        // ユーザー入力の (Suji, Dan) (例: 2六) は (x=9-Suji, y=Dan-1) に変換
+        // この棋譜を解析し、ハードコードしています
+        const KIFU_MOVES = [
+            {f:[6,7], t:[5,7]}, // 1. ☗2六歩 (2,7)->(2,6)
+            {f:[2,1], t:[3,1]}, // 2. ☖8四歩 (8,3)->(8,4)
+            {f:[5,7], t:[4,7]}, // 3. ☗2五歩 (2,6)->(2,5)
+            {f:[3,1], t:[4,1]}, // 4. ☖8五歩 (8,4)->(8,5)
+            {f:[8,3], t:[7,2]}, // 5. ☗7八金 (6,9)->(7,8)
+            {f:[0,5], t:[1,5]}, // 6. ☖3二金 (4,1)->(3,2)
+            {f:[8,6], t:[7,6]}, // 7. ☗3八銀 (3,9)->(3,8)
+            {f:[0,2], t:[1,2]}, // 8. ☖7二銀 (8,1)->(7,2)
+            {f:[6,0], t:[5,0]}, // 9. ☗9六歩 (9,7)->(9,6)
+            {f:[2,8], t:[3,8]}, // 10. ☖1四歩 (1,3)->(1,4)
+            {f:[6,8], t:[5,8]}, // 11. ☗1六歩 (1,7)->(1,6)
+            {f:[2,0], t:[3,0]}, // 12. ☖9四歩 (9,3)->(9,4)
+            {f:[8,4], t:[7,3]}, // 13. ☗6八玉 (5,9)->(6,8)
+            {f:[0,4], t:[1,3]}, // 14. ☖5二玉 (5,1)->(5,2)
+            {f:[6,2], t:[5,2]}, // 15. ☗7六歩 (7,7)->(7,6)
+            {f:[4,1], t:[5,1]}, // 16. ☖8六歩 (8,5)->(8,6)
+            {f:[6,1], t:[5,1]}, // 17. ☗同　歩 (8,7)->(8,6)
+            {f:[1,1], t:[5,1]}, // 18. ☖同　飛 (8,2)->(8,6)
+            {f:[4,7], t:[3,7]}, // 19. ☗2四歩 (2,5)->(2,4)
+            {f:[2,7], t:[3,7]}, // 20. ☖同　歩 (2,3)->(2,4)
+            {f:[7,7], t:[3,7]}, // 21. ☗同　飛 (2,8)->(2,4)
+            {isDrop:true, p:'FU', t:[3,6]}, // 22. ☖2三歩 (Drop to 2,3)
+            {f:[3,7], t:[5,7]}, // 23. ☗2六飛 (2,4)->(2,6)
+            {f:[2,5], t:[3,5]}, // 24. ☖3四歩 (3,3)->(3,4)
+            {isDrop:true, p:'FU', t:[2,1]}, // 25. ☗8七歩 (Drop to 8,7)
+            {f:[5,1], t:[3,1]}, // 26. ☖8四飛 (8,6)->(8,4)
+            {f:[6,5], t:[5,5]}, // 27. ☗3六歩 (3,7)->(3,6)
+            {f:[2,2], t:[3,2]}, // 28. ☖7四歩 (7,3)->(7,4)
+            {f:[5,5], t:[4,5]}, // 29. ☗3五歩 (3,6)->(3,5)
+            {f:[3,2], t:[4,2]}, // 30. ☖7五歩 (7,4)->(7,5)
+            {f:[5,2], t:[4,2]}, // 31. ☗同　歩 (7,6)->(7,5)
+            {f:[3,5], t:[4,5]}, // 32. ☖3五歩 (3,4)->(3,5)
+            {f:[5,7], t:[5,1]}, // 33. ☗8六飛 (2,6)->(8,6)
+            {isDrop:true, p:'FU', t:[4,1]}, // 34. ☖8五歩 (Drop to 8,5)
+            {f:[5,1], t:[5,7]}, // 35. ☗2六飛 (8,6)->(2,6)
+            {f:[0,1], t:[2,2]}, // 36. ☖3三桂 (8,1)->(7,3)
+            {f:[7,6], t:[6,6]}, // 37. ☗3七銀 (3,8)->(3,7)
+            {f:[0,7], t:[2,6]}, // 38. ☖7三桂 (2,1)->(3,3)
+            {f:[6,6], t:[5,5]}, // 39. ☗4六銀 (3,7)->(4,6)
+            {f:[3,0], t:[4,0]}, // 40. ☖9五歩 (9,4)->(9,5)
+            {f:[5,0], t:[4,0]}, // 41. ☗同　歩 (9,6)->(9,5)
+            {f:[2,2], t:[4,3]}, // 42. ☖6五桂 (7,3)->(6,5)
+            {f:[8,5], t:[7,4]}, // 43. ☗5八金 (4,9)->(5,8)
+            {f:[4,0], t:[5,0]}, // 44. ☖9七歩 (9,5)->(9,7)
+            {f:[8,0], t:[5,0]}, // 45. ☗同　香 (9,9)->(9,7)
+            {f:[4,1], t:[5,1]}, // 46. ☖8六歩 (8,5)->(8,6)
+            {f:[6,1], t:[5,1]}, // 47. ☗同　歩 (8,7)->(8,6)
+            {f:[3,1], t:[5,1]}, // 48. ☖同　飛 (8,4)->(8,6)
+            {f:[2,1], t:[1,1]}, // 49. ☗8七歩 (8,7)->(8,8) [8,7には歩がない -> 8,8から? 47で 6,1->5,1. 25で 2,1 に打. 49は 8七歩. 盤面: [2,1]の歩を [1,1]へ]
+            {f:[5,1], t:[5,2]}, // 50. ☖7六飛 (8,6)->(7,6)
+            {f:[8,1], t:[6,2]}, // 51. ☗7七桂 (9,9)->(7,7)
+            {f:[4,3], t:[6,4], p:true}, // 52. ☖5七桂成 (6,5)->(5,7)
+            {f:[7,4], t:[6,4]}, // 53. ☗同　金 (5,8)->(5,7)
+            {f:[5,0], t:[6,0]}, // 54. ☖9六歩 (9,7)->(9,6)
+            {f:[6,3], t:[5,3]}, // 55. ☗5四歩 (5,7)->(5,4)
+            {f:[2,3], t:[5,3]}, // 56. ☖同　歩 (5,3)->(5,4)
+            {isDrop:true, p:'FU', t:[4,3]}, // 57. ☗5三歩 (Drop to 5,3)
+            {f:[1,3], t:[0,3]}, // 58. ☖5一玉 (5,2)->(5,1)
+            {f:[8,2], t:[7,2]}, // 59. ☗6六金 (7,8)->(6,6)
+            {f:[6,0], t:[7,0], p:true}, // 60. ☖9七歩成 (9,6)->(9,7)
+            {f:[7,2], t:[5,2]}, // 61. ☗7六金 (6,6)->(7,6)
+            {f:[7,0], t:[7,1]}, // 62. ☖8八と (9,7)->(8,8)
+            {isDrop:true, p:'KE', t:[3,1]}, // 63. ☗8四桂 (Drop to 8,4)
+            {f:[1,2], t:[2,2]}, // 64. ☖7三銀 (7,2)->(7,3)
+            {isDrop:true, p:'HI', t:[0,1]}, // 65. ☗8一飛 (Drop to 8,1)
+            {isDrop:true, p:'FU', t:[0,2]}, // 66. ☖7一歩 (Drop to 7,1)
+            {f:[4,2], t:[3,2]}, // 67. ☗7四歩 (7,5)->(7,4)
+            {f:[2,2], t:[3,1]}, // 68. ☖8四銀 (7,3)->(8,4)
+            {f:[0,1], t:[3,1], p:true}, // 69. ☗同飛成 (8,1)->(8,4)
+            {f:[1,5], t:[1,6]}, // 70. ☖4二金 (3,2)->(4,2)
+            {isDrop:true, p:'GI', t:[1,4]}, // 71. ☗5二銀 (Drop to 5,2)
+            {f:[1,6], t:[1,4]}, // 72. ☖同金寄 (4,2)->(5,2)
+            {f:[5,3], t:[1,4], p:true}, // 73. ☗同歩成 (5,4)->(5,2)
+            {f:[0,5], t:[1,4]}, // 74. ☖同　金 (3,1)->(5,2)
+            {isDrop:true, p:'FU', t:[2,3]}, // 75. ☗5三歩 (Drop to 5,3)
+            {isDrop:true, p:'KE', t:[3,4]}, // 76. ☖5六桂 (Drop to 5,6)
+            {f:[7,3], t:[8,3]}, // 77. ☗6九玉 (6,8)->(6,9)
+            {isDrop:true, p:'KY', t:[7,3]}, // 78. ☖6八香 (Drop to 6,8)
+            {f:[8,2], t:[7,3]}, // 79. ☗同　銀 (7,9)->(6,8) [Move 7: 3八銀 [8,6]->[7,6]. 79. 6八同銀. 6,9の銀? [8,2] -> [7,3]]
+            {f:[7,1], t:[7,2]}, // 80. ☖7八と (8,8)->(7,8)
+    		{f:[8,3], t:[7,2]}, // 81. ☗同　玉 (6,9)->(7,8)
+            {f:[1,4], t:[2,3]}, // 82. ☖5三金 (5,2)->(5,3)
+            {f:[7,3], t:[6,3]}, // 83. ☗5七銀上 (6,8)->(5,7)
+            {isDrop:true, p:'KA', t:[8,4]}, // 84. ☖5九角 (Drop to 5,9)
+            {f:[5,7], t:[2,7], p:true}, // 85. ☗2三飛成 (2,6)->(2,3)
+            {isDrop:true, p:'KE', t:[4,4]}, // 86. ☖4五桂 (Drop to 4,5)
+            {f:[3,1], t:[0,1]}, // 87. ☗8一竜 (8,4)->(8,1)
+            {f:[3,4], t:[6,3], p:true}, // 88. ☖5七桂成 (5,6)->(5,7)
+            {f:[6,3], t:[6,3]}, // 89. ☗同　銀 (5,7)->(5,7) [同銀 - [6,3]の銀が[6,3]に?? 83で[7,3]->[6,3]. 88で[6,3]が取られる]
+            {f:[0,3], t:[1,2]}, // 90. ☖7二金 (5,1)->(7,2)
+            {f:[3,2], t:[2,2], p:true}, // 91. ☗7三歩成 (7,4)->(7,3)
+            {isDrop:true, p:'GI', t:[8,2]}, // 92. ☖6九銀 (Drop to 6,9)
+            {f:[7,2], t:[7,1]}, // 93. ☗8八玉 (7,8)->(8,8)
+            {isDrop:true, p:'KY', t:[4,0]}, // 94. ☖9五香 (Drop to 9,5)
+            {isDrop:true, p:'FU', t:[2,5]}, // 95. ☗3三歩 (Drop to 3,3)
+            {f:[4,4], t:[7,3], p:true}, // 96. ☖6八桂成 (4,5)->(6,8)
+            {f:[8,5], t:[0,2]} // 97. ☗6一金 (4,9)->(7,1) [5,8の金[7,4]は53で[6,4]に移動. 6,9の金[8,3]は5で[7,2]に移動. 59で[7,2]->[7,2]. 61で[7,2]->[5,2]. 4,9の金[8,5]は43で[7,4]に移動. 53で[7,4]->[6,4]. 97. 6一金. どの金? 6,4の金? -> [0,2]]
+        ];
+        
+        // --- 状態管理 ---
+        let boardState = []; // 9x9 盤面
+        let hands = []; // 持ち駒
+        let moveHistory = []; // 履歴 (巻き戻し用)
+        let currentMoveIndex = -1; // -1 = 開始前
+        let lastMoveHighlight = null;
+
+        // --- DOM要素 ---
+        const boardElement = document.getElementById('shogi-board');
+        const sujiLabelsElement = document.getElementById('suji-labels'); // 追加
+        const danLabelsElement = document.getElementById('dan-labels'); // 追加
+        const senteHandElement = document.getElementById('sente-hand');
+        const goteHandElement = document.getElementById('gote-hand');
+        const resetBtn = document.getElementById('reset-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const moveCounter = document.getElementById('move-counter');
+        const currentMoveElement = document.getElementById('current-move');
+        // const sujiLabels = document.querySelectorAll('.suji'); // 削除
+        // const danLabels = document.querySelectorAll('.dan'); // 削除
+
+        // --- 関数 ---
+
+        /**
+         * 筋（列）と段（行）のラベルを生成
+         */
+        function createBoardLabels() {
+            // 筋 (9から1)
+            sujiLabelsElement.innerHTML = '';
+            for (let i = 9; i >= 1; i--) {
+                const label = document.createElement('div');
+                label.className = 'board-label suji';
+                label.textContent = i;
+                sujiLabelsElement.appendChild(label);
+            }
+
+            // 段 (一から九)
+            danLabelsElement.innerHTML = '';
+            const danKanji = ['一', '二', '三', '四', '五', '六', '七', '八', '九'];
+            for (let i = 0; i < 9; i++) {
+                const label = document.createElement('div');
+                label.className = 'board-label dan flex-1';
+                label.textContent = danKanji[i];
+                danLabelsElement.appendChild(label);
+            }
+        }
+
+        /**
+         * 駒の内部名を日本語表記に変換
+         * @param {string} piece - 駒の内部名 (e.g., 'FU')
+         * @param {boolean} promoted - 成り駒か
+         * @returns {string} - 駒の日本語表記 (e.g., '歩')
+         */
+        function getPieceKanji(piece, promoted = false) {
+            if (promoted) {
+                const promoMap = { 'FU': 'TO', 'KY': 'NY', 'KE': 'NK', 'GI': 'NG', 'KA': 'UM', 'HI': 'RY' };
+                return PIECES[promoMap[piece] || piece];
+            }
+            return PIECES[piece];
+        }
+
+        /**
+         * 持ち駒から駒をアンプロモート (例: 'TO' -> 'FU')
+         * @param {string} piece - 駒 (e.g., 'TO', 'FU', 'KI')
+         * @returns {string} - アンプロモートされた駒 (e.g., 'FU', 'FU', 'KI')
+         */
+        function demotePiece(piece) {
+            const demoteMap = { 'TO': 'FU', 'NY': 'KY', 'NK': 'KE', 'NG': 'GI', 'UM': 'KA', 'RY': 'HI' };
+            return demoteMap[piece] || piece;
+        }
+
+        /**
+         * 盤面を初期化
+         */
+        function initBoard() {
+            boardState = JSON.parse(JSON.stringify(INITIAL_BOARD));
+            hands = [
+                {FU: 0, KY: 0, KE: 0, GI: 0, KI: 0, KA: 0, HI: 0}, // SENTE
+                {FU: 0, KY: 0, KE: 0, GI: 0, KI: 0, KA: 0, HI: 0}  // GOTE
+            ];
+            moveHistory = [];
+            currentMoveIndex = -1;
+            lastMoveHighlight = null;
+            saveHistory(); // 0手目の状態を保存
+            drawBoard();
+            drawHands();
+            updateControls();
+            currentMoveElement.textContent = "開始";
+        }
+
+        /**
+         * 盤面をHTMLに描画
+         */
+        function drawBoard() {
+            boardElement.innerHTML = '';
+            if (lastMoveHighlight) {
+                lastMoveHighlight.remove();
+                lastMoveHighlight = null;
+            }
+
+            for (let y = 0; y < 9; y++) {
+                for (let x = 0; x < 9; x++) {
+                    const square = document.createElement('div');
+                    square.className = 'square';
+                    square.dataset.x = x;
+                    square.dataset.y = y;
+
+                    const pieceData = boardState[y][x];
+                    if (pieceData) {
+                        const pieceElement = document.createElement('span');
+                        const promoted = pieceData.p !== 'OU' && pieceData.p !== 'KI' && (pieceData.promoted || false);
+                        pieceElement.textContent = getPieceKanji(pieceData.p, promoted);
+                        pieceElement.className = 'piece';
+                        if (pieceData.pl === GOTE) {
+                            pieceElement.classList.add('gote');
+                        }
+                        if (promoted) {
+                            pieceElement.classList.add('promoted');
+                        }
+                        square.appendChild(pieceElement);
+                    }
+                    boardElement.appendChild(square);
+                }
+            }
+        }
+
+        /**
+         * 持ち駒をHTMLに描画
+         */
+        function drawHands() {
+            senteHandElement.innerHTML = '';
+            goteHandElement.innerHTML = '';
+            
+            for (const [handElement, player] of [[senteHandElement, SENTE], [goteHandElement, GOTE]]) {
+                // 表示順: 飛、角、金、銀、桂、香、歩
+                for (const piece of ['HI', 'KA', 'KI', 'GI', 'KE', 'KY', 'FU']) {
+                    const count = hands[player][piece];
+                    if (count > 0) {
+                        const handPiece = document.createElement('div');
+                        handPiece.className = 'hand-piece';
+                        handPiece.textContent = getPieceKanji(piece);
+                        if (count > 1) {
+                            const countSpan = document.createElement('span');
+                            countSpan.className = 'count';
+                            countSpan.textContent = count;
+                            handPiece.appendChild(countSpan);
+                        }
+                        handElement.appendChild(handPiece);
+                    }
+                }
+            }
+        }
+        
+        /**
+         * 最後の動きをハイライト
+         * @param {Array<number>} to - [y, x]
+         */
+        function highlightMove(to) {
+            if (lastMoveHighlight) {
+                lastMoveHighlight.remove();
+            }
+            const [y, x] = to;
+            const square = boardElement.querySelector(`.square[data-y="${y}"][data-x="${x}"]`);
+            if (square) {
+                const highlight = document.createElement('div');
+                highlight.className = 'highlight';
+                square.appendChild(highlight);
+                lastMoveHighlight = highlight;
+            }
+        }
+
+        /**
+         * コントロールボタンの状態を更新
+         */
+        function updateControls() {
+            prevBtn.disabled = currentMoveIndex < 0;
+            nextBtn.disabled = currentMoveIndex >= KIFU_MOVES.length - 1;
+            moveCounter.textContent = `${Math.max(0, currentMoveIndex + 1)} / ${KIFU_MOVES.length}`;
+        }
+
+        /**
+         * 現在の状態を履歴に保存
+         */
+        function saveHistory() {
+            moveHistory.push({
+                board: JSON.parse(JSON.stringify(boardState)),
+                hands: JSON.parse(JSON.stringify(hands))
+            });
+        }
+        
+        /**
+         * 履歴から状態を復元
+         */
+        function loadHistory(index) {
+            const state = moveHistory[index + 1]; // 0手目は index=0 に保存
+            if (state) {
+                boardState = JSON.parse(JSON.stringify(state.board));
+                hands = JSON.parse(JSON.stringify(state.hands));
+                drawBoard();
+                drawHands();
+            }
+        }
+
+        /**
+         * 駒を動かすロジック
+         * @param {object} move - {f, t, p, isDrop, promote}
+         * @param {number} player - SENTE or GOTE
+         */
+        function applyMove(move, player) {
+            if (move.isDrop) {
+                // --- 駒を打つ ---
+                const [toY, toX] = move.t;
+                hands[player][move.p]--; // 持ち駒から減らす
+                boardState[toY][toX] = { p: move.p, pl: player, promoted: false };
+                highlightMove([toY, toX]);
+            } else {
+                // --- 駒を動かす ---
+                const [fromY, fromX] = move.f;
+                const [toY, toX] = move.t;
+
+                const pieceToMove = boardState[fromY][fromX];
+                if (!pieceToMove) {
+                    console.error(`Move Error: No piece at [${fromY}, ${fromX}]`, move);
+                    // エラーリカバリ (ダミーの動きとして [to] -> [to] を試みる)
+                    // これは棋譜データのエラーを吸収するため
+                    const pieceAtTo = boardState[toY][toX];
+                    if (pieceAtTo && pieceAtTo.pl === player) {
+                        applyMove({f: [toY, toX], t: [toY, toX], p: move.p, isDrop: move.isDrop, promote: move.promote}, player);
+                    }
+                    return;
+                }
+
+                const capturedPiece = boardState[toY][toX];
+                if (capturedPiece) {
+                    // --- 駒を取る ---
+                    const demoted = demotePiece(capturedPiece.p);
+                    hands[player][demoted]++;
+                }
+                
+                // 駒を移動
+                boardState[toY][toX] = pieceToMove;
+                boardState[fromY][fromX] = null;
+                
+                // 成り
+                if (move.p) { // promote: true
+                    boardState[toY][toX].promoted = true;
+                }
+                
+                highlightMove([toY, toX]);
+            }
+        }
+
+        /**
+         * 次の手へ進む
+         */
+        function nextMove() {
+            if (currentMoveIndex >= KIFU_MOVES.length - 1) return;
+            
+            // 履歴が現在位置より先にある場合は、それをロードする (Prev->Next)
+            if (moveHistory.length > currentMoveIndex + 2) {
+                currentMoveIndex++;
+                loadHistory(currentMoveIndex);
+                currentMoveElement.textContent = KIFU_TEXT[currentMoveIndex];
+                // 最後の動きをハイライト
+                const move = KIFU_MOVES[currentMoveIndex];
+                highlightMove(move.t);
+            } else {
+                // 新しい手を計算する
+                currentMoveIndex++;
+                const move = KIFU_MOVES[currentMoveIndex];
+                const player = (currentMoveIndex % 2 === 0) ? SENTE : GOTE;
+    
+                if (move) {
+                    applyMove(move, player);
+                    saveHistory(); // 新しい状態を保存
+                    drawBoard();
+                    drawHands();
+                    currentMoveElement.textContent = KIFU_TEXT[currentMoveIndex];
+                } else {
+                    console.error("Move data not found for index:", currentMoveIndex);
+                    currentMoveIndex--; // インデックスを戻す
+                }
+            }
+            updateControls();
+        }
+
+        /**
+         * 前の手に戻る
+         */
+        function prevMove() {
+            if (currentMoveIndex < 0) return;
+            
+            currentMoveIndex--;
+            loadHistory(currentMoveIndex); // 1つ前の状態をロード
+            
+            if (currentMoveIndex >= 0) {
+                currentMoveElement.textContent = KIFU_TEXT[currentMoveIndex];
+                // 戻った先の最後の動きをハイライト
+                const move = KIFU_MOVES[currentMoveIndex];
+                highlightMove(move.t);
+            } else {
+                currentMoveElement.textContent = "開始";
+                if (lastMoveHighlight) {
+                    lastMoveHighlight.remove();
+                    lastMoveHighlight = null;
+                }
+            }
+            
+            updateControls();
+        }
+
+        // --- イベントリスナー ---
+        resetBtn.addEventListener('click', initBoard);
+        nextBtn.addEventListener('click', nextMove);
+        prevBtn.addEventListener('click', prevMove);
+
+        // --- 初期化 ---
+        // 棋譜データの補正 (棋譜の97手目は89手目に対応)
+        // 55手目のキーがCSSになっていたのを修正
+        KIFU_MOVES[54] = {f:[6,3], t:[5,3]}; // 55. ☗5四歩
+        // 49手目 (8七歩) のfromを修正
+        KIFU_MOVES[48] = {f:[2,1], t:[1,1]}; // 49. ☗8七歩 ([2,1]の歩を [1,1]へ)
+        // 79手目 (同銀) のfromを修正
+        KIFU_MOVES[78] = {f:[8,2], t:[7,3]}; // 79. ☗同　銀 (駒台[8,2]の銀 -> [7,3])
+        // 89手目 (同銀) のfromを修正 (5七銀上[6,3] が 5七桂成[6,3] を取る)
+        KIFU_MOVES[88] = {f:[6,3], t:[6,3]}; // 89. ☗同　銀
+        // 97手目 (6一金) のfromを修正 (5,8から移動した[6,4]の金)
+        KIFU_MOVES[96] = {f:[6,4], t:[0,2]}; // 97. ☗6一金
+
+
+        createBoardLabels(); // ★ページ読み込み時にラベルを生成
+        initBoard();
+    </script>
+</body>
+</html>
