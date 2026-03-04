@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>広聴業務DX化：新体制運用モデル</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-cyan-200 selection:text-cyan-900">
+
+    <header class="bg-gradient-to-r from-slate-900 to-sky-800 text-white py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight">広聴業務DX化<br><span class="text-sky-400">新体制運用モデル</span></h1>
+            <p class="text-xl md:text-2xl text-slate-300 max-w-3xl leading-relaxed">
+                「小さな声を聴く力」のデジタル実装。<br>
+                24時間365日の全自動録音とAI解析により、市民の声を一言一句逃さず政策の資産へと転換します。
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        <!-- Section 1: 定量効果 (Charts) -->
+        <section class="mb-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4 border-b-4 border-sky-500 inline-block pb-2">改革による圧倒的な定量効果</h2>
+                <p class="text-lg text-slate-600 mt-4">物理的な制約を取り払い、機会損失ゼロと持続可能な人員体制を両立します。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-100">
+                    <h3 class="text-2xl font-bold text-slate-700 mb-6 flex items-center"><span class="text-4xl mr-3">⏱️</span> 受付時間の完全網羅</h3>
+                    <p class="text-slate-600 mb-8">平日日中のみの有人対応から、システムによる24時間365日の受付へ。深夜や休日、仕事中の現役世代の声も取りこぼしません。</p>
+                    <div class="chart-container">
+                        <canvas id="hoursChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-100">
+                    <h3 class="text-2xl font-bold text-slate-700 mb-6 flex items-center"><span class="text-4xl mr-3">👥</span> 人的リソースの最適化</h3>
+                    <p class="text-slate-600 mb-8">電話の「取次ぎ役」としての体制を縮小し、AIが生成したデータを「分析・対応」する能動的な広聴業務へとシフトします。</p>
+                    <div class="chart-container">
+                        <canvas id="staffChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: 新・業務フローチャート -->
+        <section class="mb-24 bg-slate-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16 border-y border-slate-200">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4 border-b-4 border-emerald-500 inline-block pb-2">新・業務フローチャート</h2>
+                    <p class="text-lg text-slate-600 mt-4">自動システムによる一次処理と、人間の目によるトリアージ（仕分け）を組み合わせたプロセス図</p>
+                </div>
+
+                <div class="relative max-w-5xl mx-auto font-medium text-slate-700">
+                    
+                    <!-- Phase 1: 自動化 -->
+                    <div class="flex flex-col items-center">
+                        <div class="bg-slate-200 text-slate-600 font-bold text-sm px-6 py-2 rounded-full mb-6 shadow-sm z-10">1. 受付・一次処理フェーズ（全自動）</div>
+                        <div class="flex flex-col md:flex-row items-center gap-4 bg-white p-6 rounded-2xl shadow-lg border border-sky-100 w-full max-w-3xl justify-between relative z-10">
+                            <div class="text-center w-full md:w-1/3 flex flex-col items-center">
+                                <div class="bg-sky-50 p-4 rounded-full mb-3 text-3xl">📞</div>
+                                <div class="font-bold text-slate-800">市民からの入電</div>
+                                <div class="text-xs text-slate-500 mt-1">最大5分で自動終了</div>
+                            </div>
+                            <div class="text-sky-300 font-bold text-2xl hidden md:block">&#10142;</div>
+                            <div class="text-sky-300 font-bold text-2xl md:hidden rotate-90 my-2">&#10142;</div>
+                            <div class="text-center w-full md:w-1/3 flex flex-col items-center">
+                                <div class="bg-indigo-50 p-4 rounded-full mb-3 text-3xl">🎙️</div>
+                                <div class="font-bold text-slate-800">BlueBean</div>
+                                <div class="text-xs text-slate-500 mt-1">24h 自動録音</div>
+                            </div>
+                            <div class="text-sky-300 font-bold text-2xl hidden md:block">&#10142;</div>
+                            <div class="text-sky-300 font-bold text-2xl md:hidden rotate-90 my-2">&#10142;</div>
+                            <div class="text-center w-full md:w-1/3 flex flex-col items-center bg-sky-50/50 p-4 rounded-xl border border-sky-100">
+                                <div class="text-3xl mb-2">🤖</div>
+                                <div class="font-bold text-sky-800">AI連携 (Gemini)</div>
+                                <div class="text-xs text-sky-600 mt-1">テキスト化 / 要約 / メール起案</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vertical Line connecting 1 and 2 -->
+                    <div class="h-10 w-1 bg-sky-200 mx-auto"></div>
+
+                    <!-- Phase 2: 広聴部トリアージ -->
+                    <div class="flex flex-col items-center">
+                        <div class="bg-slate-200 text-slate-600 font-bold text-sm px-6 py-2 rounded-full mb-6 shadow-sm z-10">2. 仕分け・連携フェーズ（広聴部）</div>
+                        <div class="bg-indigo-600 text-white p-4 rounded-xl shadow-lg text-center w-full max-w-xl relative z-10 hover:bg-indigo-700 transition-colors">
+                            <div class="font-bold text-lg mb-1 tracking-wider">👤 広聴部 管理者</div>
+                            <div class="text-sm text-indigo-100">AI生成データの日次確認とトリアージ（仕分け）</div>
+                        </div>
+                    </div>
+
+                    <!-- Branching Lines (Hidden on small mobile, visible on md) -->
+                    <div class="hidden md:block relative h-12 w-full max-w-4xl mx-auto">
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-indigo-200"></div>
+                        <div class="absolute top-6 left-[16.6%] right-[16.6%] h-1 bg-indigo-200"></div>
+                        <div class="absolute top-6 left-[16.6%] w-1 h-6 bg-indigo-200"></div>
+                        <div class="absolute top-6 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-indigo-200"></div>
+                        <div class="absolute top-6 right-[16.6%] w-1 h-6 bg-indigo-200"></div>
+                    </div>
+                    <div class="md:hidden h-10 w-1 bg-indigo-200 mx-auto"></div>
+
+                    <!-- Phase 2 Routes (A, B, C) -->
+                    <div class="flex flex-col md:flex-row gap-6 w-full max-w-6xl mx-auto relative z-10">
+                        <!-- Route A -->
+                        <div class="flex-1 flex flex-col">
+                            <div class="bg-white border-t-8 border-emerald-500 rounded-2xl shadow-lg p-6 w-full text-center h-full flex flex-col hover:-translate-y-1 transition-transform">
+                                <div class="font-black text-emerald-600 text-xl mb-1">ルート A</div>
+                                <div class="font-bold text-slate-700 mb-2">通常連携</div>
+                                <div class="bg-emerald-50 text-emerald-700 text-xs py-1 px-3 rounded-full inline-block mx-auto mb-4 font-bold">政策要望・苦情・相談</div>
+                                <div class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">AIの下書きを確認・修正し、<br>関係部局へメール等で転送。</div>
+                                <div class="border-t border-dashed border-emerald-200 pt-4 mt-auto">
+                                    <div class="text-xs text-emerald-500 font-bold mb-2">▼ フェーズ 3 へ</div>
+                                    <div class="bg-emerald-500 text-white rounded-lg p-3 text-sm font-bold shadow-sm">
+                                        関係部局<br>
+                                        <span class="text-xs font-normal opacity-90 block mt-1">確認・対応検討・返信</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Route B -->
+                        <div class="flex-1 flex flex-col mt-4 md:mt-0">
+                            <div class="bg-white border-t-8 border-slate-400 rounded-2xl shadow-lg p-6 w-full text-center h-full flex flex-col hover:-translate-y-1 transition-transform">
+                                <div class="font-black text-slate-500 text-xl mb-1">ルート B</div>
+                                <div class="font-bold text-slate-700 mb-2">足切り・クローズ</div>
+                                <div class="bg-slate-100 text-slate-600 text-xs py-1 px-3 rounded-full inline-block mx-auto mb-4 font-bold">誹謗中傷・無言・カスハラ</div>
+                                <div class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">関係部局へは転送せず、<br>広聴部にて処理を終了。</div>
+                                <div class="border-t border-dashed border-slate-200 pt-4 mt-auto">
+                                    <div class="text-xs text-slate-400 font-bold mb-2">▼ フェーズ 4 へ</div>
+                                    <div class="bg-slate-100 border border-slate-300 text-slate-600 rounded-lg p-3 text-sm font-bold shadow-sm">
+                                        処理終了<br>
+                                        <span class="text-xs font-normal block mt-1">データ保存・BL登録検討</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Route C -->
+                        <div class="flex-1 flex flex-col mt-4 md:mt-0">
+                            <div class="bg-white border-t-8 border-rose-500 rounded-2xl shadow-lg p-6 w-full text-center h-full flex flex-col hover:-translate-y-1 transition-transform relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-12 h-12 bg-rose-100 rounded-bl-full flex items-start justify-end p-2">
+                                    <span class="text-rose-500 animate-ping absolute">⚠️</span>
+                                    <span class="text-rose-500 relative">⚠️</span>
+                                </div>
+                                <div class="font-black text-rose-600 text-xl mb-1">ルート C</div>
+                                <div class="font-bold text-slate-700 mb-2">(P) 緊急対応</div>
+                                <div class="bg-rose-50 text-rose-700 text-xs py-1 px-3 rounded-full inline-block mx-auto mb-4 font-bold border border-rose-100">事故・事件等のアラート検知</div>
+                                <div class="text-sm text-slate-600 mb-6 flex-grow leading-relaxed">即時内容確認・折返しを実施し、<br>関係部局へ電話等で緊急連絡。</div>
+                                <div class="border-t border-dashed border-rose-200 pt-4 mt-auto">
+                                    <div class="text-xs text-rose-500 font-bold mb-2">▼ フェーズ 3 へ (特急)</div>
+                                    <div class="bg-rose-500 text-white rounded-lg p-3 text-sm font-bold shadow-sm">
+                                        関係部局<br>
+                                        <span class="text-xs font-normal opacity-90 block mt-1">緊急対応・事実確認</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Merge Lines for Phase 4 -->
+                    <div class="hidden md:block relative h-16 w-full max-w-4xl mx-auto">
+                        <div class="absolute top-0 left-[16.6%] w-1 h-8 bg-emerald-200"></div>
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-8 bg-slate-200"></div>
+                        <div class="absolute top-0 right-[16.6%] w-1 h-8 bg-rose-200"></div>
+                        <div class="absolute top-8 left-[16.6%] right-[16.6%] h-1 bg-teal-200"></div>
+                        <div class="absolute top-8 left-1/2 transform -translate-x-1/2 w-1 h-8 bg-teal-400"></div>
+                    </div>
+                    <div class="md:hidden h-10 w-1 bg-teal-300 mx-auto mt-4"></div>
+
+                    <!-- Phase 4: 記録・資産化 -->
+                    <div class="flex flex-col items-center">
+                        <div class="bg-slate-200 text-slate-600 font-bold text-sm px-6 py-2 rounded-full mb-6 shadow-sm z-10">4. 記録・資産化フェーズ（広聴部）</div>
+                        <div class="bg-teal-700 p-8 rounded-2xl shadow-xl text-center w-full max-w-4xl relative z-10 flex flex-col md:flex-row items-center gap-6 justify-between text-white border-b-8 border-teal-900">
+                            <div class="flex-1 flex flex-col items-center">
+                                <div class="bg-teal-600/50 p-4 rounded-full mb-3 text-4xl">📊</div>
+                                <div class="font-bold text-lg">統合記録・DB化</div>
+                                <div class="text-sm text-teal-100 mt-2">元の声と部局対応結果を紐づけ</div>
+                            </div>
+                            <div class="text-teal-400 text-3xl hidden md:block">&#10142;</div>
+                            <div class="flex-1 flex flex-col items-center">
+                                <div class="bg-teal-600/50 p-4 rounded-full mb-3 text-4xl">📈</div>
+                                <div class="font-bold text-lg">トレンドレポート</div>
+                                <div class="text-sm text-teal-100 mt-2">AI論調分析による自動集計</div>
+                            </div>
+                            <div class="text-teal-400 text-3xl hidden md:block">&#10142;</div>
+                            <div class="flex-1 flex flex-col items-center">
+                                <div class="bg-teal-600/50 p-4 rounded-full mb-3 text-4xl">🏛️</div>
+                                <div class="font-bold text-lg text-amber-300">政策還元</div>
+                                <div class="text-sm text-teal-100 mt-2">執行部・幹事長室へ報告</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: AI解析シミュレーター -->
+        <section class="mb-24">
+            <div class="max-w-4xl mx-auto bg-gradient-to-br from-indigo-900 to-sky-900 rounded-3xl shadow-2xl overflow-hidden text-white border-4 border-sky-400/30 relative">
+                <div class="absolute top-0 right-0 p-4 opacity-10 text-8xl pointer-events-none">✨</div>
+                <div class="p-8 md:p-12">
+                    <div class="text-center mb-8">
+                        <span class="bg-sky-500 text-white px-3 py-1 rounded-full text-sm font-bold tracking-wider mb-4 inline-block">DEMONSTRATION</span>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-4">✨ AI解析シミュレーター (体験版)</h2>
+                        <p class="text-sky-200 text-lg">市民からの入電（文字起こし結果）を想定したテキストを入力してください。Gemini AIが瞬時に「仕分け・要約・対応案」を生成します。</p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <label for="citizen-input" class="block text-sm font-medium text-sky-300 mb-2">市民からの電話内容 (例: 道路の陥没報告、理不尽なクレーム 等)</label>
+                            <textarea id="citizen-input" rows="4" class="w-full rounded-xl border-0 bg-white/10 px-4 py-3 text-white placeholder-sky-200/50 focus:ring-2 focus:ring-sky-400 focus:bg-white/20 transition-all resize-none" placeholder="例: 「〇〇町の交差点の信号機が見えにくくて危ない。すぐに対応してほしい。」"></textarea>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button onclick="runSimulation()" id="simulate-btn" class="bg-gradient-to-r from-sky-400 to-emerald-400 hover:from-sky-300 hover:to-emerald-300 text-slate-900 font-bold text-lg py-4 px-10 rounded-full shadow-lg transform transition-all hover:scale-105 hover:shadow-sky-500/50 flex items-center justify-center mx-auto w-full md:w-auto">
+                                <span id="btn-text">✨ AIで解析・仕分けを実行</span>
+                                <div id="btn-loader" class="hidden ml-3 h-5 w-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+                            </button>
+                        </div>
+
+                        <div id="error-message" class="hidden bg-rose-500/20 border border-rose-500/50 text-rose-200 p-4 rounded-xl text-center"></div>
+
+                        <div id="ai-result" class="hidden mt-8 bg-white text-slate-800 rounded-xl p-6 shadow-inner space-y-6">
+                            <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                                <h3 class="text-xl font-bold text-slate-700">解析結果レポート</h3>
+                                <span id="res-category" class="px-4 py-1.5 rounded-full font-bold text-sm shadow-sm"></span>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-500 mb-2 uppercase tracking-wider">AI 要約 (3箇条)</h4>
+                                <div id="res-summary" class="bg-slate-50 p-4 rounded-lg text-slate-700 whitespace-pre-line leading-relaxed"></div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-500 mb-2 uppercase tracking-wider">推奨アクション / メール起案</h4>
+                                <div id="res-action" class="bg-sky-50 p-4 rounded-lg text-sky-900 whitespace-pre-line leading-relaxed border border-sky-100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: システム維持と安全マージン (Charts) -->
+        <section class="mb-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4 border-b-4 border-amber-500 inline-block pb-2">システム維持と安全マージン</h2>
+                <p class="text-lg text-slate-600 mt-4">1件最大5分の録音上限設定により、データ容量の枯渇を防ぎ安定稼働を実現。</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-100 max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 items-center text-center">
+                    <div>
+                        <div class="text-5xl font-black text-amber-500 mb-2">60<span class="text-2xl font-bold text-slate-500"> 件/日</span></div>
+                        <p class="text-sm text-slate-500 font-bold">全件上限5分フル録音の想定</p>
+                    </div>
+                    <div class="text-4xl text-slate-300 font-bold hidden md:block">&#10005;</div>
+                    <div class="text-4xl text-slate-300 font-bold md:hidden">&#8595;</div>
+                    <div>
+                        <div class="text-5xl font-black text-amber-500 mb-2">30<span class="text-2xl font-bold text-slate-500"> 日</span></div>
+                        <p class="text-sm text-slate-500 font-bold">1ヶ月の運用</p>
+                    </div>
+                    <div class="text-4xl text-slate-300 font-bold hidden md:block">&#61;</div>
+                    <div class="text-4xl text-slate-300 font-bold md:hidden">&#8595;</div>
+                    <div>
+                        <div class="text-5xl font-black text-rose-500 mb-2">9<span class="text-2xl font-bold text-slate-500"> GB/月</span></div>
+                        <p class="text-sm text-slate-500 font-bold">月間データ消費量目安</p>
+                    </div>
+                </div>
+                
+                <p class="text-slate-600 text-center mb-6">初期契約ストレージ容量（40GB）に対する、月別データ蓄積量のシミュレーション。全入電が上限の5分間であったという最も厳しい条件下でも、4ヶ月以上のデータ保持が保証されます。</p>
+
+                <div class="chart-container">
+                    <canvas id="storageChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-12 text-center">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-2xl font-bold text-white mb-4">広聴機能の抜本的改革へ</h2>
+            <p class="mb-6 max-w-2xl mx-auto">「電話に出ない」ためのシステム化ではありません。<br>すべての国民の声を、安全に、正確に、そして持続的に政策へと届けるためのデジタルトランスフォーメーションです。</p>
+            <p class="text-sm">&copy; 2026 広聴部体制見直しプロジェクト</p>
+        </div>
+    </footer>
+
+    <script>
+        function wrapLabel(label, maxChars) {
+            if (label.length <= maxChars) return label;
+            let lines = [];
+            for (let i = 0; i < label.length; i += maxChars) {
+                lines.push(label.substring(i, i + maxChars));
+            }
+            return lines;
+        }
+
+        const commonTooltipPlugin = {
+            tooltip: {
+                callbacks: {
+                    title: function(tooltipItems) {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        if (Array.isArray(label)) {
+                            return label.join('');
+                        } else {
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+
+        // Initialize Staff Chart if element exists
+        const staffChartEl = document.getElementById('staffChart');
+        if (staffChartEl) {
+            const staffLabels = [
+                wrapLabel("現行体制（アルバイト・シフト制）", 16),
+                wrapLabel("新体制（全自動録音・AI解析）", 16)
+            ];
+            const ctxStaff = staffChartEl.getContext('2d');
+            new Chart(ctxStaff, {
+                type: 'bar',
+                data: {
+                    labels: staffLabels,
+                    datasets: [{
+                        label: '電話対応スタッフ数 (名)',
+                        data: [12, 0],
+                        backgroundColor: ['#94a3b8', '#0284c7'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: commonTooltipPlugin,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: '人員数' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize Hours Chart if element exists
+        const hoursChartEl = document.getElementById('hoursChart');
+        if (hoursChartEl) {
+            const hoursLabels = [
+                wrapLabel("対応可能時間（システム・AI）", 16),
+                wrapLabel("対応不可時間（機会損失）", 16)
+            ];
+            const ctxHours = hoursChartEl.getContext('2d');
+            new Chart(ctxHours, {
+                type: 'doughnut',
+                data: {
+                    labels: hoursLabels,
+                    datasets: [{
+                        data: [24, 0],
+                        backgroundColor: ['#10b981', '#f1f5f9'],
+                        borderWidth: 0
+                    },
+                    {
+                        data: [8, 16],
+                        backgroundColor: ['#94a3b8', '#e2e8f0'],
+                        borderWidth: 0,
+                        hidden: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        ...commonTooltipPlugin,
+                        title: {
+                            display: true,
+                            text: '1日の受付可能時間 (24h)',
+                            font: { size: 16 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize Storage Chart if element exists
+        const storageChartEl = document.getElementById('storageChart');
+        if (storageChartEl) {
+            const storageLabels = [
+                wrapLabel("1ヶ月経過", 16),
+                wrapLabel("2ヶ月経過", 16),
+                wrapLabel("3ヶ月経過", 16),
+                wrapLabel("4ヶ月経過", 16)
+            ];
+            const ctxStorage = storageChartEl.getContext('2d');
+            new Chart(ctxStorage, {
+                type: 'bar',
+                data: {
+                    labels: storageLabels,
+                    datasets: [
+                        {
+                            label: '累積データ消費量 (GB)',
+                            data: [9, 18, 27, 36],
+                            backgroundColor: '#f59e0b',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'システム空き容量 (GB)',
+                            data: [31, 22, 13, 4],
+                            backgroundColor: '#e2e8f0',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            stacked: true,
+                            max: 40,
+                            title: { display: true, text: 'ストレージ容量 (GB)' }
+                        },
+                        y: {
+                            stacked: true
+                        }
+                    },
+                    plugins: {
+                        ...commonTooltipPlugin,
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    xMin: 40,
+                                    xMax: 40,
+                                    borderColor: '#ef4444',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        display: true,
+                                        content: '初期容量上限 (40GB)',
+                                        position: 'end'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- AI Simulation Logic (Gemini API Integration) ---
+        async function fetchWithBackoff(url, options, maxRetries = 5) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return await response.json();
+                } catch (error) {
+                    if (i === maxRetries - 1) throw error;
+                    await new Promise(res => setTimeout(res, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        async function runSimulation() {
+            const inputEl = document.getElementById('citizen-input');
+            const btnEl = document.getElementById('simulate-btn');
+            const btnText = document.getElementById('btn-text');
+            const btnLoader = document.getElementById('btn-loader');
+            const resultEl = document.getElementById('ai-result');
+            const errorEl = document.getElementById('error-message');
+            
+            const text = inputEl.value.trim();
+            if (!text) {
+                alert('市民からの電話内容を入力してください。');
+                return;
+            }
+
+            // UI Loading State
+            inputEl.disabled = true;
+            btnEl.disabled = true;
+            btnText.textContent = 'AIが解析中...';
+            btnLoader.classList.remove('hidden');
+            resultEl.classList.add('hidden');
+            errorEl.classList.add('hidden');
+
+            const apiKey = ""; // API Key provided by execution environment
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            const systemInstruction = `あなたは政党の広聴部（市民相談窓口）の優秀なAIアシスタントです。入力された「市民からの電話録音テキスト」を分析し、以下の基準でJSONを出力してください。
+            ・ルートA (通常連携): 具体的な政策要望、地域の課題報告、一般的な相談。
+            ・ルートB (足切り): 単なる誹謗中傷、暴言、意味不明な内容（カスハラ）。
+            ・ルートC (緊急対応): 事故、事件、人命に関わる事態、重大な不祥事の告発。`;
+
+            const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            category: { 
+                                type: "STRING", 
+                                description: "判定結果。『ルートA (通常連携)』、『ルートB (足切り/カスハラ)』、『ルートC (緊急対応)』のいずれかの文字列を厳密に返してください。"
+                            },
+                            summary: { 
+                                type: "STRING", 
+                                description: "内容の簡潔な要約を3箇条書きで出力してください（例: ・〇〇の件\n・〇〇との指摘\n・〇〇を要望）。"
+                            },
+                            action: { 
+                                type: "STRING", 
+                                description: "ルートA/Cの場合は関係部局へ転送するための「メール下書き（宛先、要件、対応依頼）」を作成。ルートBの場合は「関係部局への転送は不要です。ログとして保存します。」というメッセージ。"
+                            }
+                        },
+                        required: ["category", "summary", "action"]
+                    }
+                }
+            };
+
+            try {
+                const data = await fetchWithBackoff(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!responseText) throw new Error("APIからの応答が空でした。");
+                
+                const result = JSON.parse(responseText);
+
+                // Update UI with results
+                const catEl = document.getElementById('res-category');
+                catEl.textContent = result.category;
+                
+                // Style category badge
+                catEl.className = 'px-4 py-1.5 rounded-full font-bold text-sm shadow-sm ';
+                if (result.category.includes('ルートA')) {
+                    catEl.classList.add('bg-emerald-100', 'text-emerald-700', 'border', 'border-emerald-200');
+                } else if (result.category.includes('ルートB')) {
+                    catEl.classList.add('bg-slate-200', 'text-slate-600', 'border', 'border-slate-300');
+                } else if (result.category.includes('ルートC')) {
+                    catEl.classList.add('bg-rose-100', 'text-rose-700', 'border', 'border-rose-200', 'animate-pulse');
+                } else {
+                    catEl.classList.add('bg-sky-100', 'text-sky-700');
+                }
+
+                document.getElementById('res-summary').textContent = result.summary;
+                document.getElementById('res-action').textContent = result.action;
+
+                resultEl.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("API Error:", error);
+                errorEl.textContent = "AIとの通信に失敗しました。時間をおいて再度お試しください。";
+                errorEl.classList.remove('hidden');
+            } finally {
+                // Restore UI State
+                inputEl.disabled = false;
+                btnEl.disabled = false;
+                btnText.textContent = '✨ AIで解析・仕分けを実行';
+                btnLoader.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
