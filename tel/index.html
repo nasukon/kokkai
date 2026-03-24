@@ -193,36 +193,125 @@
                     </div>
                 </div>
 
-                <div class="mt-8">
-                    <h3 class="text-lg font-bold mb-4 border-l-4 border-primary pl-3">音声ガイダンスの流れ</h3>
-                    <p class="text-sm text-indigo-600 mb-4">お電話がつながりましたら、音声案内に従ってご希望の番号（プッシュ信号）を押してください。</p>
-                    
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="bg-white p-4 rounded-lg flex items-start border">
-                            <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3">1</div>
-                            <div>
-                                <h4 class="font-bold text-gray mb-1">ご意見・ご要望</h4>
-                                <p class="text-xs text-gray-600">党の政策や活動に対するご意見・ご要望を自動録音にて承ります。（※AIによるテキスト化を行っております）</p>
-                            </div>
-                        </div>
+                <!-- =====================================================
+     「音声ガイダンスの流れ」セクション 差し替え用HTML
+     既存の <div class="mt-8"> ... </div> ブロックと丸ごと入れ替えてください
+     ===================================================== -->
 
-                        <div class="bg-white p-4 rounded-lg flex items-start border">
-                            <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3">2</div>
-                            <div>
-                                <h4 class="font-bold text-gray mb-1">公明新聞電子版コールセンター</h4>
-                                <p class="text-xs text-gray-600">コールセンターの番号を音声で案内いたします</p>
-                            </div>
-                        </div>
+<div class="mt-8">
+    <h3 class="text-lg font-bold mb-2 border-l-4 border-primary pl-3">音声ガイダンスの流れ</h3>
+    <p class="text-sm text-gray-500 mb-6">
+        お電話がつながりましたら、音声案内に従ってご希望の番号（プッシュ信号）を押してください。
+    </p>
 
-                        <div class="bg-white p-4 rounded-lg flex items-start border md:col-span-2">
-                            <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3">3</div>
-                            <div>
-                                <h4 class="font-bold text-gray mb-1">その他のお問い合わせ</h4>
-                                <p class="text-xs text-gray-600">上記以外のご用件、または党本部内の特定の部署・担当者へご用の方はこちらの番号を押して、オペレーターへお申し付けください。</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- ===== 第1層ラベル ===== -->
+    <div class="flex items-center mb-3">
+        <span class="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full mr-2">第1層</span>
+        <span class="text-xs text-gray-500">最初にガイダンスが流れます。番号を押してください。</span>
+    </div>
+
+    <!-- ===== 第1層：5択グリッド ===== -->
+    <div class="grid md:grid-cols-2 gap-3 mb-2">
+
+        <!-- ① ご意見・ご要望 -->
+        <div class="bg-gray-700 p-4 rounded-lg flex items-start border border-gray-600">
+            <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">①</div>
+            <div>
+                <h4 class="font-bold text-white mb-1 text-sm">ご意見・ご要望</h4>
+                <p class="text-xs text-gray-300">党の政策や活動に対するご意見・ご要望を自動録音にて承ります。<br>（※AIによるテキスト化を行っております）</p>
+                <span class="inline-block mt-2 bg-gray-600 text-gray-300 text-xs px-2 py-0.5 rounded">→ 録音</span>
+            </div>
+        </div>
+
+        <!-- ② 電子版の購読・操作 -->
+        <div class="bg-gray-700 p-4 rounded-lg flex items-start border border-gray-600">
+            <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">②</div>
+            <div>
+                <h4 class="font-bold text-white mb-1 text-sm">電子版の購読・操作に関するお問い合わせ</h4>
+                <p class="text-xs text-gray-300">電子版の購読申し込み、ログイン、操作方法などのご相談はこちら。</p>
+                <span class="inline-block mt-2 bg-gray-600 text-gray-300 text-xs px-2 py-0.5 rounded">→ 自動番号案内</span>
+            </div>
+        </div>
+
+        <!-- ③ 紙の新聞・出版物（分岐あり・強調） -->
+        <div class="bg-gray-700 p-4 rounded-lg flex items-start border-2 border-yellow-400 relative">
+            <div class="bg-yellow-400 text-gray-900 font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">③</div>
+            <div class="flex-1">
+                <h4 class="font-bold text-white mb-1 text-sm">紙の新聞・出版物に関するお問い合わせ</h4>
+                <p class="text-xs text-gray-300">月刊「公明」や書籍、紙の公明新聞の購読・解約・配達などはこちら。</p>
+                <span class="inline-block mt-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded">→ 第2層へ進む ↓</span>
+            </div>
+            <!-- 分岐バッジ -->
+            <span class="absolute top-2 right-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded-full">分岐あり</span>
+        </div>
+
+        <!-- ④ その他 -->
+        <div class="bg-gray-700 p-4 rounded-lg flex items-start border border-gray-600">
+            <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">④</div>
+            <div>
+                <h4 class="font-bold text-white mb-1 text-sm">その他のお問い合わせ</h4>
+                <p class="text-xs text-gray-300">上記以外のご用件はこちら。自動録音にて承ります。<br>（※AIによるテキスト化を行っております）</p>
+                <span class="inline-block mt-2 bg-gray-600 text-gray-300 text-xs px-2 py-0.5 rounded">→ 録音</span>
+            </div>
+        </div>
+
+        <!-- ⓪ もう一度（中央寄せ・全幅） -->
+        <div class="bg-gray-800 p-3 rounded-lg flex items-center border border-dashed border-gray-500 md:col-span-2">
+            <div class="bg-gray-600 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">⓪</div>
+            <div>
+                <h4 class="font-bold text-gray-300 text-sm">もう一度ガイダンスを聞く</h4>
+                <p class="text-xs text-gray-500">案内をもう一度最初から聞き直す場合は 0 を押してください。</p>
+            </div>
+        </div>
+
+    </div><!-- /第1層グリッド -->
+    
+    <!-- ===== 矢印：第1層③ → 第2層 ===== -->
+    <div class="flex flex-col items-center my-4">
+        <div class="w-0.5 h-6 bg-yellow-400"></div>
+        <div class="bg-yellow-400 text-gray-900 text-xs font-bold px-4 py-1 rounded-full">③ を選んだ場合、さらに番号を押してください</div>
+        <div class="w-0.5 h-6 bg-yellow-400"></div>
+    </div>
+
+    <!-- ===== 第2層ラベル ===== -->
+    <div class="flex items-center mb-3">
+        <span class="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full mr-2">第2層</span>
+        <span class="text-xs text-gray-500">③を選択した方のみ。引き続き番号を押してください。</span>
+    </div>
+
+    <!-- ===== 第2層：3択グリッド ===== -->
+    <div class="grid md:grid-cols-3 gap-3 pl-4 border-l-4 border-yellow-400">
+
+        <!-- 第2層① -->
+        <div class="bg-gray-700 p-4 rounded-lg flex flex-col border border-gray-600">
+            <div class="flex items-center mb-2">
+                <div class="bg-yellow-400 text-gray-900 font-bold w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mr-2 text-xs">①</div>
+                <h4 class="font-bold text-white text-sm">月刊「公明」・公明グラフ・書籍</h4>
+            </div>
+            <p class="text-xs text-gray-300 flex-1">月刊誌・書籍・パンフレット等のご注文・お問い合わせ。</p>
+        </div>
+
+        <!-- 第2層② -->
+        <div class="bg-gray-700 p-4 rounded-lg flex flex-col border border-gray-600">
+            <div class="flex items-center mb-2">
+                <div class="bg-yellow-400 text-gray-900 font-bold w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mr-2 text-xs">②</div>
+                <h4 class="font-bold text-white text-sm">新聞の記事内容について</h4>
+            </div>
+            <p class="text-xs text-gray-300 flex-1">掲載記事の内容に関するご質問・ご意見はこちら。</p>
+        </div>
+
+        <!-- 第2層③ -->
+        <div class="bg-gray-700 p-4 rounded-lg flex flex-col border border-gray-600">
+            <div class="flex items-center mb-2">
+                <div class="bg-yellow-400 text-gray-900 font-bold w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mr-2 text-xs">③</div>
+                <h4 class="font-bold text-white text-sm">紙の新聞の購読・解約・配達</h4>
+            </div>
+            <p class="text-xs text-gray-300 flex-1">紙の公明新聞の新規購読、解約、配達に関するご連絡はこちら。</p>
+        </div>
+
+    </div><!-- /第2層グリッド -->
+    
+</div><!-- /mt-8 -->
 
             </div>
         </section>
