@@ -177,12 +177,12 @@
         </section>
 
         <!-- Section 4: 代表電話（コールフロー） -->
-        <section class="bg-white text-blue rounded-xl shadow-lg p-6 md:p-10 overflow-hidden relative border-t-4 border-pink-400">
+        <section class="bg-white text-gray-800 rounded-xl shadow-lg p-6 md:p-10 overflow-hidden relative border-t-4 border-pink-400">
             <div class="relative z-10">
                 <h2 class="text-2xl md:text-3xl font-bold mb-2 flex items-center">
                     公明党本部 代表電話のご案内
                 </h2>
-                <p class="text-blue-800 text-sm md:text-base mb-6">
+                <p class="text-gray-600 text-sm md:text-base mb-6">
                     自動音声案内システムを導入しております。
                 </p>
 
@@ -205,14 +205,13 @@
 
 <div class="mt-8">
     <h3 class="text-lg font-bold mb-2 border-l-4 border-primary pl-3">音声ガイダンスの流れ</h3>
-    <p class="text-sm text-gray-500 mb-6">
-        お電話がつながりましたら、音声案内に従ってご希望の番号（プッシュ信号）を押してください。
+    <p class="text-base text-gray-700 mb-6">
+        お電話がつながりましたら、音声案内に従ってご希望の番号を押してください。
     </p>
 
     <!-- ===== 第1層ラベル ===== -->
     <div class="flex items-center mb-3">
-        <span class="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full mr-2">第1層</span>
-        <span class="text-xs text-gray-800">最初にガイダンスが流れます。番号を押してください。</span>
+        <span class="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full mr-2">最初にガイダンスが流れます。続けてご希望の番号を押してください。</span>
     </div>
 
     <!-- ===== 第1層：6択グリッド ===== -->
@@ -290,8 +289,7 @@
 
     <!-- ===== 第2層ラベル ===== -->
     <div class="flex items-center mb-3">
-        <span class="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full mr-2">第2層</span>
-        <span class="text-xs text-gray-800">4を選択した方のみ。引き続き番号を押してください。</span>
+        <span class="bg-yellow-400 text-gray-900 text-base font-bold px-3 py-1 rounded-full mr-2">4を選択した方のみ。引き続き番号を押してください。</span>
     </div>
 
     <!-- ===== 第2層：4択グリッド ===== -->
@@ -304,6 +302,7 @@
                 <h4 class="font-bold text-gray-800 text-sm">新聞の記事内容について</h4>
             </div>
             <p class="text-sm text-gray-600 flex-1">掲載記事の内容に関するご質問・ご意見</p>
+            <span class="inline-block mt-2 bg-yellow-200 text-yellow-900 text-xs px-2 py-0.5 rounded self-start">→ 録音</span>
         </div>
 
         <!-- 第2層2 -->
@@ -313,6 +312,7 @@
                 <h4 class="font-bold text-gray-800 text-sm">新聞の購読・解約・配達</h4>
             </div>
             <p class="text-sm text-gray-600 flex-1">紙の公明新聞の新規購読、解約、配達に関するご連絡</p>
+            <span class="inline-block mt-2 bg-yellow-200 text-yellow-900 text-xs px-2 py-0.5 rounded self-start">→ 録音</span>
         </div>
 
         <!-- 第2層3 その他 -->
@@ -332,7 +332,7 @@
                 <h4 class="font-bold text-gray-700 text-sm">もう一度ガイダンスを聞く</h4>
             </div>
             <p class="text-xs text-gray-500 flex-1">案内をもう一度聞き直す場合は 0 を押してください。</p>
-            <span class="inline-block mt-2 bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded self-start">→ 第1層に戻る</span>
+            <span class="inline-block mt-2 bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded self-start">→ 最初のガイダンスに戻ります</span>
         </div>
 
     </div><!-- /第2層グリッド -->
