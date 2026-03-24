@@ -206,12 +206,12 @@
 <div class="mt-8">
     <h3 class="text-lg font-bold mb-2 border-l-4 border-primary pl-3">音声ガイダンスの流れ</h3>
     <p class="text-base text-gray-700 mb-6">
-        お電話がつながりましたら、音声案内に従ってご希望の番号を押してください。
+        お電話がつながりましたら、音声案内に従ってご希望の番号を押してください。<br>（※録音したご意見はAIによるテキスト化を行い、関係部局にお伝えいたします。）
     </p>
 
     <!-- ===== 第1層ラベル ===== -->
     <div class="flex items-center mb-3">
-        <span class="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full mr-2">最初にガイダンスが流れます。続けてご希望の番号を押してください。</span>
+        <span class="bg-primary text-white text-base font-bold px-3 py-1 rounded-full mr-2">最初にガイダンスが流れます。続けてご希望の番号を押してください。</span>
     </div>
 
     <!-- ===== 第1層：6択グリッド ===== -->
@@ -222,7 +222,7 @@
             <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">1</div>
             <div>
                 <h4 class="font-bold text-gray-800 mb-1 text-sm">ご意見・ご要望</h4>
-                <p class="text-sm text-gray-600">党の政策や活動に対するご意見・ご要望を自動録音にて承ります。<br>（※AIによるテキスト化を行っております）</p>
+                <p class="text-sm text-gray-600">党の政策や活動に対するご意見・ご要望を自動録音にて承ります。</p>
                 <span class="inline-block mt-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">→ 録音</span>
             </div>
         </div>
@@ -253,9 +253,9 @@
             <div class="flex-1">
                 <h4 class="font-bold text-gray-800 mb-1 text-sm">新聞の記事・購読・配達に関するお問い合わせ</h4>
                 <p class="text-sm text-gray-600">紙の公明新聞の記事内容、購読申し込み、解約、配達など</p>
-                <span class="inline-block mt-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded">→ 第2層へ進む ↓</span>
+                <span class="inline-block mt-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded">→ 次の分岐へ進む ↓</span>
             </div>
-            <span class="absolute top-2 right-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded-full">分岐あり</span>
+            <span class="absolute top-2 right-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded-full" hidden>分岐あり</span>
         </div>
 
         <!-- 5 その他 -->
@@ -263,7 +263,7 @@
             <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">5</div>
             <div>
                 <h4 class="font-bold text-gray-800 mb-1 text-sm">その他のお問い合わせ</h4>
-                <p class="text-sm text-gray-600">上記以外のご用件はこちら。自動録音にて承ります。<br>（※AIによるテキスト化を行っております）</p>
+                <p class="text-sm text-gray-600">上記以外のご用件はこちら。自動録音にて承ります。</p>
                 <span class="inline-block mt-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">→ 録音</span>
             </div>
         </div>
@@ -283,7 +283,7 @@
     <!-- ===== 矢印：第1層4 → 第2層 ===== -->
     <div class="flex flex-col items-center my-4">
         <div class="w-0.5 h-6 bg-yellow-400"></div>
-        <div class="bg-yellow-400 text-gray-900 text-xs font-bold px-4 py-1 rounded-full">4 を選んだ場合、さらに番号を押してください</div>
+        <div class="bg-yellow-400 text-gray-900 text-sm font-bold px-4 py-1 rounded-full">4 を選んだ場合、さらに番号を押してください</div>
         <div class="w-0.5 h-6 bg-yellow-400"></div>
     </div>
 
