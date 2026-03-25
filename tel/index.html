@@ -4,359 +4,562 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>あなたの声を公明党に | 公明党（構成案）</title>
-    <!-- Tailwind CSS (デザイン用) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome (アイコン用) -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#005baa', /* 公明党ブルー */
-                        secondary: '#f0f4f8',
-                        accent: '#e60012',
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        /* アコーディオンのアニメーション用 */
-        .accordion-content {
-            transition: max-height 0.3s ease-out, padding 0.3s ease;
-            max-height: 0;
+        /* ===== リセット・基本 ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.7;
+            font-size: 16px;
+        }
+        a { color: inherit; text-decoration: none; }
+ 
+        /* ===== カラー変数 ===== */
+        :root {
+            --primary:        #005baa;
+            --primary-light:  #e8f0fb;
+            --primary-border: #b3ccee;
+            --yellow:         #f5c400;
+            --yellow-light:   #fffbe6;
+            --yellow-border:  #f5c400;
+            --gray-light:     #f3f4f6;
+            --gray-border:    #d1d5db;
+            --text-dark:      #1f2937;
+            --text-mid:       #4b5563;
+            --text-light:     #6b7280;
+        }
+ 
+        /* ===== ヘッダー ===== */
+        header {
+            background: #fff;
+            border-bottom: 4px solid var(--primary);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: 0.15em;
+        }
+        nav { display: flex; gap: 24px; }
+        nav a { font-size: 13px; font-weight: 600; color: #555; }
+        nav a:hover { color: var(--primary); }
+        nav a.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 2px;
+        }
+ 
+        /* ===== メインコンテナ ===== */
+        main { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+ 
+        /* ===== ページタイトル ===== */
+        h1 {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary);
+            text-align: center;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 20px;
+            margin-bottom: 32px;
+        }
+ 
+        /* ===== リードテキスト ===== */
+        .lead-box {
+            background: #eef4fb;
+            border-left: 4px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 40px;
+            font-size: 14px;
+            color: var(--text-mid);
+        }
+ 
+        /* ===== セクション共通 ===== */
+        section { margin-bottom: 48px; }
+        h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-dark);
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h2 .h2-icon { font-size: 20px; }
+ 
+        /* ===== Section1: Webフォーム ===== */
+        .web-form-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            position: relative;
             overflow: hidden;
         }
-        .accordion-content.open {
-            max-height: 500px;
-            padding-top: 1rem;
-            padding-bottom: 1rem;
+        .web-form-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 5px; height: 100%;
+            background: var(--primary);
         }
-        .accordion-icon {
-            transition: transform 0.3s ease;
+        .web-form-card p { color: var(--text-mid); margin-bottom: 20px; }
+        .btn-primary {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 14px 32px;
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(0,91,170,0.25);
+            transition: background 0.2s, transform 0.2s;
         }
-        .accordion-icon.open {
-            transform: rotate(180deg);
+        .btn-primary:hover { background: #004a8f; transform: translateY(-2px); }
+        .btn-note { font-size: 12px; color: var(--text-light); margin-top: 10px; }
+ 
+        /* ===== Section3: 専用窓口 ===== */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 640px) { .contact-grid { grid-template-columns: 1fr; } }
+ 
+        .contact-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .contact-card.blue  { border-top: 4px solid #60a5fa; }
+        .contact-card.green { border-top: 4px solid #34d399; }
+        .contact-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark); }
+        .contact-card > p  { font-size: 14px; color: var(--text-mid); margin-bottom: 16px; }
+ 
+        .phone-box { border-radius: 8px; padding: 16px; text-align: center; }
+        .phone-box.blue-bg  { background: #eff6ff; }
+        .phone-box.green-bg { background: #f0fdf4; }
+        .phone-label  { font-size: 12px; color: var(--text-light); margin-bottom: 4px; }
+        .phone-number {
+            font-size: 24px; font-weight: 900;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            text-decoration: none;
+        }
+        .phone-number.blue  { color: var(--primary); }
+        .phone-number.green { color: #15803d; }
+        .phone-number:hover { opacity: 0.8; text-decoration: underline; }
+        .phone-hours { font-size: 12px; color: var(--text-light); margin-top: 6px; }
+ 
+        .btn-secondary {
+            display: inline-block; margin-top: 12px;
+            background: #fff; border: 1px solid #15803d; color: #15803d;
+            font-size: 13px; font-weight: 700; padding: 8px 16px;
+            border-radius: 6px; transition: background 0.2s;
+        }
+        .btn-secondary:hover { background: #f0fdf4; }
+ 
+        .btn-app {
+            display: inline-block; margin-top: 12px;
+            background: #fff; border: 1px solid var(--primary); color: var(--primary);
+            font-size: 13px; font-weight: 700; padding: 8px 16px;
+            border-radius: 6px; transition: background 0.2s;
+        }
+        .btn-app:hover { background: #eff6ff; }
+ 
+        /* ===== Section4: 代表電話 ===== */
+        .tel-section {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 40px;
+            border-top: 4px solid #f9a8d4; /* 薄いピンク帯 */
+            position: relative;
+            overflow: hidden;
+        }
+        /* 背景装飾の受話器絵文字 */
+        .tel-section::after {
+            content: "☎";
+            position: absolute;
+            bottom: -20px; right: -10px;
+            font-size: 150px;
+            color: var(--primary);
+            opacity: 0.06;
+            transform: rotate(-12deg);
+            line-height: 1;
+            pointer-events: none;
+        }
+        .tel-section > * { position: relative; z-index: 1; }
+ 
+        .tel-section-sub { font-size: 14px; color: var(--text-light); margin-bottom: 28px; margin-top: -16px; }
+ 
+        .tel-number-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 28px;
+            text-align: center;
+            margin-bottom: 32px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .tel-number-label { font-size: 13px; color: var(--text-light); font-weight: 700; margin-bottom: 8px; }
+        .tel-number-link {
+            font-size: 40px; font-weight: 900; color: var(--primary);
+            letter-spacing: 0.05em;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            text-decoration: none;
+        }
+        .tel-number-link:hover { opacity: 0.8; }
+        .tel-hours-badge {
+            display: inline-block; margin-top: 16px;
+            background: #fefce8; color: #854d0e;
+            font-size: 13px; font-weight: 600;
+            padding: 8px 16px; border-radius: 6px;
+        }
+        .tel-hours-badge small {
+            font-size: 11px; font-weight: 400;
+            display: block; margin-top: 4px; opacity: 0.8;
+        }
+ 
+        /* ===== IVRフローチャート ===== */
+        .ivr-title {
+            font-size: 16px; font-weight: 700;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+            margin-bottom: 8px; color: var(--text-dark);
+        }
+        .ivr-desc { font-size: 14px; color: var(--text-light); margin-bottom: 20px; }
+ 
+        .layer-label { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .layer-badge {
+            font-size: 12px; font-weight: 700;
+            padding: 3px 12px; border-radius: 999px;
+        }
+        .layer-badge.blue   { background: var(--primary); color: #fff; }
+        .layer-badge.yellow { background: var(--yellow); color: #1a1a1a; }
+        .layer-badge-desc   { font-size: 12px; color: var(--text-light); }
+ 
+        /* 第1層グリッド */
+        .ivr-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px; margin-bottom: 8px;
+        }
+        @media (max-width: 640px) { .ivr-grid { grid-template-columns: 1fr; } }
+ 
+        .ivr-card {
+            border-radius: 8px; padding: 16px;
+            display: flex; align-items: flex-start; gap: 12px;
+            border: 1px solid var(--primary-border);
+            background: var(--primary-light);
+        }
+        .ivr-card.yellow-card {
+            background: var(--yellow-light);
+            border: 2px solid var(--yellow-border);
+            position: relative;
+        }
+        .ivr-card.gray-card {
+            background: var(--gray-light);
+            border: 1px dashed var(--gray-border);
+        }
+ 
+        /* 丸数字バッジ */
+        .num-badge {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px; flex-shrink: 0;
+        }
+        .num-badge.blue   { background: var(--primary); color: #fff; }
+        .num-badge.yellow { background: var(--yellow); color: #1a1a1a; }
+        .num-badge.gray   { background: #9ca3af; color: #fff; }
+        .num-badge.sm     { width: 26px; height: 26px; font-size: 12px; }
+ 
+        .ivr-card-body h4 { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+        .ivr-card-body p  { font-size: 14px; color: var(--text-mid); }
+        .ivr-tag {
+            display: inline-block; margin-top: 8px;
+            font-size: 11px; padding: 2px 8px; border-radius: 4px;
+        }
+        .ivr-tag.blue         { background: #dbeafe; color: #1e40af; }
+        .ivr-tag.yellow       { background: var(--yellow); color: #1a1a1a; font-weight: 700; }
+        .ivr-tag.yellow-light { background: #fef08a; color: #713f12; }
+        .ivr-tag.gray         { background: #e5e7eb; color: #374151; }
+ 
+        .branch-badge {
+            position: absolute; top: 8px; right: 8px;
+            background: var(--yellow); color: #1a1a1a;
+            font-size: 11px; font-weight: 700;
+            padding: 2px 8px; border-radius: 999px;
+        }
+ 
+        /* 矢印 */
+        .ivr-arrow { display: flex; flex-direction: column; align-items: center; margin: 16px 0; }
+        .ivr-arrow-line { width: 2px; height: 24px; background: var(--yellow); }
+        .ivr-arrow-label {
+            background: var(--yellow); color: #1a1a1a;
+            font-size: 12px; font-weight: 700;
+            padding: 4px 16px; border-radius: 999px;
+        }
+ 
+        /* 第2層グリッド */
+        .ivr-grid-l2 {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding-left: 16px;
+            border-left: 4px solid var(--yellow);
+        }
+        @media (max-width: 640px) { .ivr-grid-l2 { grid-template-columns: 1fr; } }
+ 
+        .ivr-card-l2 {
+            background: var(--yellow-light);
+            border: 1px solid var(--yellow-border);
+            border-radius: 8px; padding: 16px;
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        .ivr-card-l2.gray-card {
+            background: var(--gray-light);
+            border: 1px dashed var(--gray-border);
+        }
+        .ivr-card-l2-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .ivr-card-l2 h4 { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+        .ivr-card-l2 p  { font-size: 14px; color: var(--text-mid); }
+ 
+        /* ===== フッター ===== */
+        footer {
+            text-align: center; padding: 32px 20px;
+            font-size: 13px; color: var(--text-light);
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans leading-relaxed tracking-wide">
-
+<body>
+ 
     <!-- ヘッダー -->
-    <header class="bg-white shadow-sm border-b-4 border-primary">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold text-primary tracking-widest">KOMEITO</div>
-            <nav class="hidden md:flex space-x-6 text-sm font-semibold text-gray-600">
-                <a href="#" class="hover:text-primary">ホーム</a>
-                <a href="#" class="hover:text-primary">ニュース</a>
-                <a href="#" class="hover:text-primary">政策</a>
-                <a href="#" class="text-primary border-b-2 border-primary pb-1">あなたの声を公明党に</a>
+    <header>
+        <div class="header-inner">
+            <div class="logo">KOMEITO</div>
+            <nav>
+                <a href="#">ホーム</a>
+                <a href="#">ニュース</a>
+                <a href="#">政策</a>
+                <a href="#" class="active">あなたの声を公明党に</a>
             </nav>
         </div>
     </header>
-
-    <main class="max-w-4xl mx-auto px-4 py-8 md:py-12">
-        
-        <h1 class="text-3xl md:text-4xl font-bold text-center text-primary mb-8 border-b-2 border-gray-200 pb-4">
-            お問い合わせ・ご意見
-        </h1>
-
-        <div class="bg-blue-50 border-l-4 border-primary p-4 mb-10 rounded-r-lg">
-            <p class="text-sm md:text-base text-gray-700">
-                党へのご意見・ご要望、各種お問い合わせを承っております。<br>
-                皆様からお寄せいただいた貴重な声は、今後の政策立案や党活動の参考にさせていただきます。
-            </p>
+ 
+    <main>
+ 
+        <h1>お問い合わせ・ご意見</h1>
+ 
+        <div class="lead-box">
+            党へのご意見・ご要望、各種お問い合わせを承っております。<br>
+            皆様からお寄せいただいた貴重な声は、今後の政策立案や党活動の参考にさせていただきます。
         </div>
-
-        <!-- Section 1: Webフォーム（最優先） -->
-        <section class="mb-12 bg-white rounded-xl shadow-md p-6 md:p-8 border border-gray-100 relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-2 h-full bg-primary"></div>
-            <h2 class="text-2xl font-bold mb-4 flex items-center">
-                <i class="fa-solid fa-laptop-medical text-primary mr-3 text-xl"></i>
-                Webからのご意見・ご要望
-            </h2>
-            <p class="text-gray-600 mb-6">
-                24時間受付可能です。
-            </p>
-            <div class="text-center">
-                <a href="#" class="inline-block bg-primary hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transition duration-300 transform hover:-translate-y-1">
-                    <i class="fa-solid fa-pen-to-square mr-2"></i> ご意見・ご要望フォームへ進む
-                </a>
-                <p class="text-xs text-gray-500 mt-3">※外部サイト（Googleフォーム）へ移動します。</p>
-            </div>
-        </section>
-
-        <!-- Section 2: FAQ（アコーディオン） -->
-        <section class="mb-12" hidden>
-            <h2 class="text-2xl font-bold mb-6 flex items-center border-b pb-2">
-                <i class="fa-solid fa-circle-question text-primary mr-3"></i>
-                よくあるご質問（FAQ）
-            </h2>
-            
-            <div class="space-y-4">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <button class="accordion-button w-full px-6 py-4 text-left font-bold text-gray-800 flex justify-between items-center focus:outline-none hover:bg-gray-50 rounded-lg">
-                        <span class="flex items-center"><i class="fa-solid fa-q text-primary mr-2 opacity-70"></i> ポスターの掲示・依頼について</span>
-                        <i class="fa-solid fa-chevron-down text-gray-400 accordion-icon"></i>
-                    </button>
-                    <div class="accordion-content px-6 bg-gray-50 text-gray-600 text-sm md:text-base border-t border-gray-100">
-                        <p class="flex items-start"><i class="fa-solid fa-a text-accent mr-2 mt-1 opacity-70"></i><span>【回答ダミー】ポスターの掲示にご協力いただきありがとうございます。新しいポスターの送付や、色褪せたポスターの交換につきましては、お住まいの地域の総支部・支部、またはお近くの地方議員まで直接ご連絡をお願いいたします。</span></p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <button class="accordion-button w-full px-6 py-4 text-left font-bold text-gray-800 flex justify-between items-center focus:outline-none hover:bg-gray-50 rounded-lg">
-                        <span class="flex items-center"><i class="fa-solid fa-q text-primary mr-2 opacity-70"></i> 新聞の遅配・誤配・お休み連絡について</span>
-                        <i class="fa-solid fa-chevron-down text-gray-400 accordion-icon"></i>
-                    </button>
-                    <div class="accordion-content px-6 bg-gray-50 text-gray-600 text-sm md:text-base border-t border-gray-100">
-                        <p class="flex items-start"><i class="fa-solid fa-a text-accent mr-2 mt-1 opacity-70"></i><span>【回答ダミー】ご不便をおかけし申し訳ございません。公明新聞の配達に関する各種ご連絡は、購読をお申し込みいただいた販売店（配達員）、または担当の議員までご連絡をお願いいたします。</span></p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <button class="accordion-button w-full px-6 py-4 text-left font-bold text-gray-800 flex justify-between items-center focus:outline-none hover:bg-gray-50 rounded-lg">
-                        <span class="flex items-center"><i class="fa-solid fa-q text-primary mr-2 opacity-70"></i> 出版物・各種グッズの購入について</span>
-                        <i class="fa-solid fa-chevron-down text-gray-400 accordion-icon"></i>
-                    </button>
-                    <div class="accordion-content px-6 bg-gray-50 text-gray-600 text-sm md:text-base border-t border-gray-100">
-                        <p class="flex items-start"><i class="fa-solid fa-a text-accent mr-2 mt-1 opacity-70"></i><span>【回答ダミー】公明党の各種出版物やポスター等のグッズにつきましては、「公明出版サービス」の専用Webサイトまたは専用ダイヤルより直接ご注文いただけます。詳しくは下記「目的別のお問い合わせ」をご参照ください。</span></p>
-                    </div>
+ 
+        <!-- Section 1: Webフォーム -->
+        <section>
+            <div class="web-form-card">
+                <h2><span class="h2-icon">💻</span>Webからのご意見・ご要望</h2>
+                <p>24時間受付可能です。</p>
+                <div style="text-align:center;">
+                    <a href="#" class="btn-primary">✏️ ご意見・ご要望フォームへ進む</a>
+                    <p class="btn-note">※外部サイト（Googleフォーム）へ移動します。</p>
                 </div>
             </div>
         </section>
-
-        <!-- Section 3: 目的別専用窓口 -->
-        <section class="mb-12">
-            <h2 class="text-2xl font-bold mb-6 flex items-center border-b pb-2">
-                <i class="fa-solid fa-phone-volume text-primary mr-3"></i>
-                専用窓口のご案内
-            </h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                
-                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-blue-400 flex flex-col justify-between">
+ 
+        <!-- Section 3: 専用窓口 -->
+        <section>
+            <h2><span class="h2-icon">📞</span>専用窓口のご案内</h2>
+            <div class="contact-grid">
+ 
+                <!-- 電子版 -->
+                <div class="contact-card blue">
                     <div>
-                        <h3 class="font-bold text-lg mb-2 text-gray-800">公明新聞 電子版に関するお問い合わせ</h3>
-                        <p class="text-sm text-gray-600 mb-4">電子版の登録や操作に関するお問い合わせ。</p>
+                        <h3>公明新聞 電子版に関するお問い合わせ</h3>
+                        <p>電子版の登録や操作に関するお問い合わせ。</p>
                     </div>
-                    <div class="bg-blue-50 p-4 rounded-lg text-center">
-                        <p class="text-xs text-gray-500 mb-1">公明新聞電子版 サポートデスク</p>
-                        <a href="tel:0120350500" class="text-2xl font-bold text-primary hover:underline block">
-                            <i class="fa-solid fa-phone text-lg mr-1"></i> 0120-350-500
-                        </a>
-                        <p class="text-xs text-gray-500 mt-1">受付：平日 9:00〜17:00</p>
-                        <div class="mt-3">
-                            <a href="https://www.komei.or.jp/newspaper-app/" target="_blank" class="inline-block bg-white border border-blue-600 text-primary hover:bg-blue-50 text-sm font-bold py-2 px-4 rounded transition">
-                                <i class="fa-solid fa-mobile-screen mr-1"></i> 電子版アプリ案内
-                            </a>
+                    <div class="phone-box blue-bg">
+                        <p class="phone-label">公明新聞電子版 サポートデスク</p>
+                        <a href="tel:0120350500" class="phone-number blue">📞 0120-350-500</a>
+                        <p class="phone-hours">受付：平日 9:00〜17:00</p>
+                        <a href="https://www.komei.or.jp/newspaper-app/" target="_blank" class="btn-app">📱 電子版アプリ案内</a>
+                    </div>
+                </div>
+ 
+                <!-- 出版サービス -->
+                <div class="contact-card green">
+                    <div>
+                        <h3>出版物・グッズ等のご注文</h3>
+                        <p>月刊「公明」や書籍、パンフレットなどのご注文はこちら。</p>
+                    </div>
+                    <div class="phone-box green-bg">
+                        <p class="phone-label">公明出版サービス</p>
+                        <a href="tel:0120959947" class="phone-number green">📞 0120-959-947</a>
+                        <a href="https://komeiss.jp/" target="_blank" class="btn-secondary">🛒 Web注文サイトへ</a>
+                    </div>
+                </div>
+ 
+            </div>
+        </section>
+ 
+        <!-- Section 4: 代表電話 -->
+        <section class="tel-section">
+            <h2><span class="h2-icon">☎️</span>公明党本部 代表電話のご案内</h2>
+            <p class="tel-section-sub">自動音声案内システムを導入しております。</p>
+ 
+            <div class="tel-number-box">
+                <p class="tel-number-label">公明党本部 代表</p>
+                <a href="tel:0333530111" class="tel-number-link">☎️ 03-3353-0111</a>
+                <div class="tel-hours-badge">
+                    受付時間：全日 9:00〜22:00
+                    <small>※将来的な24時間受付対応へ向けたシステム移行期間中のため、当面は上記時間での受付とさせていただきます。</small>
+                </div>
+            </div>
+ 
+            <!-- IVRフローチャート -->
+            <div>
+                <p class="ivr-title">音声ガイダンスの流れ</p>
+                <p class="ivr-desc">お電話がつながりましたら、音声案内に従ってご希望の番号を押してください。<br>（※録音にてお預かりしたご用件はAIによるテキスト化を行い、関係部局にお伝えいたします。）</p>
+ 
+                <!-- 第1層 -->
+                <div class="layer-label">
+                    <span class="layer-badge blue">第1層</span>
+                    <span class="layer-badge-desc">最初にガイダンスが流れます。続けてご希望の番号を押してください。</span>
+                </div>
+ 
+                <div class="ivr-grid">
+ 
+                    <div class="ivr-card">
+                        <div class="num-badge blue">1</div>
+                        <div class="ivr-card-body">
+                            <h4>ご意見・ご要望</h4>
+                            <p>党の政策や活動に対するご意見・ご要望を自動録音にて承ります。</p>
+                            <span class="ivr-tag blue">→ 録音</span>
                         </div>
                     </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-green-500 flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-bold text-lg mb-2 text-gray-800">出版物のご注文</h3>
-                        <p class="text-sm text-gray-600 mb-4">月刊「公明」や書籍、パンフレットなどのご注文はこちら。</p>
-                    </div>
-                    <div class="bg-green-50 p-4 rounded-lg text-center">
-                        <p class="text-xs text-gray-500 mb-1">公明出版サービス</p>
-                        <a href="tel:0120959947" class="text-2xl font-bold text-green-700 hover:underline block">
-                            <i class="fa-solid fa-phone text-lg mr-1"></i> 0120-959-947
-                        </a>
-                        <div class="mt-3">
-                            <a href="https://komeiss.jp/" target="_blank" class="inline-block bg-white border border-green-600 text-green-700 hover:bg-green-50 text-sm font-bold py-2 px-4 rounded transition">
-                                <i class="fa-solid fa-cart-shopping mr-1"></i> Web注文サイトへ
-                            </a>
+ 
+                    <div class="ivr-card">
+                        <div class="num-badge blue">2</div>
+                        <div class="ivr-card-body">
+                            <h4>電子版の登録や操作に関するお問い合わせ</h4>
+                            <p>電子版の登録、ログイン、操作方法などのご相談</p>
+                            <span class="ivr-tag blue">→ 自動番号案内</span>
                         </div>
                     </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- Section 4: 代表電話（コールフロー） -->
-        <section class="bg-white text-gray-800 rounded-xl shadow-lg p-6 md:p-10 overflow-hidden relative border-t-4 border-pink-400">
-            <div class="relative z-10">
-                <h2 class="text-2xl md:text-3xl font-bold mb-2 flex items-center">
-                    公明党本部 代表電話のご案内
-                </h2>
-                <p class="text-gray-600 text-sm md:text-base mb-6">
-                    自動音声案内システムを導入しております。
-                </p>
-
-                <div class="bg-white text-gray-800 rounded-lg p-6 md:p-8 text-center mb-8 shadow-inner">
-                    <p class="text-sm text-gray-500 mb-2 font-bold" hidden>公明党本部 代表</p>
-                    <a href="tel:0333530111" class="text-4xl md:text-5xl font-black text-primary hover:opacity-80 transition tracking-wider inline-block">
-                        <!-- fa-phone と同じアイコンを追加、mr-2で番号との間隔を確保 -->
-                        <i class="fa-solid fa-phone text-3xl mr-2"></i>03-3353-0111
-                    </a>
-                    <div class="mt-4 inline-block bg-yellow-100 text-yellow-800 px-4 py-2 rounded font-semibold text-sm">
-                        <p>受付時間：全日 9:00〜22:00</p>
-                        <p class="text-xs mt-1 font-normal opacity-90">※将来的な24時間受付対応へ向けたシステム移行期間中のため、当面は上記時間での受付とさせていただきます。</p>
+ 
+                    <div class="ivr-card">
+                        <div class="num-badge blue">3</div>
+                        <div class="ivr-card-body">
+                            <h4>出版物の購入</h4>
+                            <p>月刊「公明」や書籍、パンフレット等のご購入</p>
+                            <span class="ivr-tag blue">→ 自動番号案内</span>
+                        </div>
                     </div>
+ 
+                    <div class="ivr-card yellow-card">
+                        <span class="branch-badge" hidden>分岐あり</span>
+                        <div class="num-badge yellow">4</div>
+                        <div class="ivr-card-body">
+                            <h4>新聞の記事・購読・配達に関するお問い合わせ</h4>
+                            <p>紙の公明新聞の記事内容、購読申し込み、解約、配達など</p>
+                            <span class="ivr-tag yellow">→ 次の分岐へ進む ↓</span>
+                        </div>
+                    </div>
+ 
+                    <div class="ivr-card">
+                        <div class="num-badge blue">5</div>
+                        <div class="ivr-card-body">
+                            <h4>その他のお問い合わせ</h4>
+                            <p>上記以外のご用件はこちら。自動録音にて承ります。</p>
+                            <span class="ivr-tag blue">→ 録音</span>
+                        </div>
+                    </div>
+ 
+                    <div class="ivr-card gray-card">
+                        <div class="num-badge gray">0</div>
+                        <div class="ivr-card-body">
+                            <h4>もう一度ガイダンスを聞く</h4>
+                            <p style="font-size:13px;color:#6b7280;">案内をもう一度最初から聞き直す場合は 0</p>
+                        </div>
+                    </div>
+ 
+                </div><!-- /第1層グリッド -->
+ 
+                <!-- 矢印 -->
+                <div class="ivr-arrow">
+                    <div class="ivr-arrow-line"></div>
+                    <div class="ivr-arrow-label">4 を選んだ場合</div>
+                    <div class="ivr-arrow-line"></div>
                 </div>
-
-<!-- =====================================================
-     「音声ガイダンスの流れ」セクション 差し替え用HTML
-     既存の <div class="mt-8"> ... </div> ブロックと丸ごと入れ替えてください
-     ===================================================== -->
-
-<div class="mt-8">
-    <h3 class="text-lg font-bold mb-2 border-l-4 border-primary pl-3">音声ガイダンスの流れ</h3>
-    <p class="text-base text-gray-700 mb-6">
-        お電話がつながりましたら、音声案内に従ってご希望の番号を押してください。<br>（※録音にてお預かりしたご用件はAIによるテキスト化を行い、関係部局にお伝えいたします。）
-    </p>
-
-    <!-- ===== 第1層ラベル ===== -->
-    <div class="flex items-center mb-3">
-        <span class="bg-primary text-white text-base font-bold px-3 py-1 rounded-full mr-2">最初にガイダンスが流れます。続けてご希望の番号を押してください。</span>
-    </div>
-
-    <!-- ===== 第1層：6択グリッド ===== -->
-    <div class="grid md:grid-cols-2 gap-3 mb-2">
-
-        <!-- 1 ご意見・ご要望 -->
-        <div class="bg-blue-50 p-4 rounded-lg flex items-start border border-blue-200">
-            <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">1</div>
-            <div>
-                <h4 class="font-bold text-gray-800 mb-1 text-sm">ご意見・ご要望</h4>
-                <p class="text-sm text-gray-600">党の政策や活動に対するご意見・ご要望を自動録音にて承ります。</p>
-                <span class="inline-block mt-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">→ 録音</span>
-            </div>
-        </div>
-
-        <!-- 2 電子版の登録や操作 -->
-        <div class="bg-blue-50 p-4 rounded-lg flex items-start border border-blue-200">
-            <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">2</div>
-            <div>
-                <h4 class="font-bold text-gray-800 mb-1 text-sm">電子版の登録や操作に関するお問い合わせ</h4>
-                <p class="text-sm text-gray-600">電子版の登録、ログイン、操作方法などのご相談</p>
-                <span class="inline-block mt-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">→ 自動番号案内</span>
-            </div>
-        </div>
-
-        <!-- 3 出版物の購入 -->
-        <div class="bg-blue-50 p-4 rounded-lg flex items-start border border-blue-200">
-            <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">3</div>
-            <div>
-                <h4 class="font-bold text-gray-800 mb-1 text-sm">出版物の購入</h4>
-                <p class="text-sm text-gray-600">月刊「公明」や書籍、パンフレット等のご購入</p>
-                <span class="inline-block mt-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">→ 自動番号案内</span>
-            </div>
-        </div>
-
-        <!-- 4 新聞の記事・購読・配達（分岐あり・強調） -->
-        <div class="bg-yellow-50 p-4 rounded-lg flex items-start border-2 border-yellow-400 relative">
-            <div class="bg-yellow-400 text-gray-900 font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">4</div>
-            <div class="flex-1">
-                <h4 class="font-bold text-gray-800 mb-1 text-sm">新聞の記事・購読・配達に関するお問い合わせ</h4>
-                <p class="text-sm text-gray-600">紙の公明新聞の記事内容、購読申し込み、解約、配達など</p>
-                <span class="inline-block mt-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded">→ 次の分岐へ進む ↓</span>
-            </div>
-            <span class="absolute top-2 right-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded-full" hidden>分岐あり</span>
-        </div>
-
-        <!-- 5 その他 -->
-        <div class="bg-blue-50 p-4 rounded-lg flex items-start border border-blue-200">
-            <div class="bg-primary text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">5</div>
-            <div>
-                <h4 class="font-bold text-gray-800 mb-1 text-sm">その他のお問い合わせ</h4>
-                <p class="text-sm text-gray-600">上記以外のご用件はこちら。自動録音にて承ります。</p>
-                <span class="inline-block mt-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">→ 録音</span>
-            </div>
-        </div>
-
-        <!-- 0 もう一度 -->
-        <div class="bg-gray-100 p-3 rounded-lg flex items-center border border-dashed border-gray-300">
-            <div class="bg-gray-400 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 text-sm">0</div>
-            <div>
-                <h4 class="font-bold text-gray-700 text-sm">もう一度ガイダンスを聞く</h4>
-                <p class="text-xs text-gray-500">案内をもう一度最初から聞き直す場合は 0 </p>
-            </div>
-        </div>
-
-    </div><!-- /第1層グリッド -->
-
-
-    <!-- ===== 矢印：第1層4 → 第2層 ===== -->
-    <div class="flex flex-col items-center my-4">
-        <div class="w-0.5 h-6 bg-yellow-400"></div>
-        <div class="bg-yellow-400 text-gray-900 text-sm font-bold px-4 py-1 rounded-full">4 を選んだ場合</div>
-        <div class="w-0.5 h-6 bg-yellow-400"></div>
-    </div>
-
-    <!-- ===== 第2層ラベル ===== -->
-    <div class="flex items-center mb-3">
-        <span class="bg-yellow-400 text-gray-900 text-base font-bold px-3 py-1 rounded-full mr-2">4を選択した後、ガイダンスに従って次の番号を押してください。</span>
-    </div>
-
-    <!-- ===== 第2層：4択グリッド ===== -->
-    <div class="grid md:grid-cols-2 gap-3 pl-4 border-l-4 border-yellow-400">
-
-        <!-- 第2層1 -->
-        <div class="bg-yellow-50 p-4 rounded-lg flex flex-col border border-yellow-200">
-            <div class="flex items-center mb-2">
-                <div class="bg-yellow-400 text-gray-900 font-bold w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mr-2 text-xs">1</div>
-                <h4 class="font-bold text-gray-800 text-sm">新聞の記事内容について</h4>
-            </div>
-            <p class="text-sm text-gray-600 flex-1">掲載記事の内容に関するご質問・ご意見</p>
-            <span class="inline-block mt-2 bg-yellow-200 text-yellow-900 text-xs px-2 py-0.5 rounded self-start">→ 録音</span>
-        </div>
-
-        <!-- 第2層2 -->
-        <div class="bg-yellow-50 p-4 rounded-lg flex flex-col border border-yellow-200">
-            <div class="flex items-center mb-2">
-                <div class="bg-yellow-400 text-gray-900 font-bold w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mr-2 text-xs">2</div>
-                <h4 class="font-bold text-gray-800 text-sm">新聞の購読・解約・配達</h4>
-            </div>
-            <p class="text-sm text-gray-600 flex-1">紙の公明新聞の新規購読、解約、配達に関するご連絡</p>
-            <span class="inline-block mt-2 bg-yellow-200 text-yellow-900 text-xs px-2 py-0.5 rounded self-start">→ 録音</span>
-        </div>
-
-        <!-- 第2層3 その他 -->
-        <div class="bg-yellow-50 p-4 rounded-lg flex flex-col border border-yellow-200">
-            <div class="flex items-center mb-2">
-                <div class="bg-yellow-400 text-gray-900 font-bold w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mr-2 text-xs">3</div>
-                <h4 class="font-bold text-gray-800 text-sm">その他のお問い合わせ</h4>
-            </div>
-            <p class="text-sm text-gray-600 flex-1">上記以外のご用件</p>
-            <span class="inline-block mt-2 bg-yellow-200 text-yellow-900 text-xs px-2 py-0.5 rounded self-start">→ 録音</span>
-        </div>
-
-        <!-- 第2層0 もう一度 -->
-        <div class="bg-gray-100 p-4 rounded-lg flex flex-col border border-dashed border-gray-300">
-            <div class="flex items-center mb-2">
-                <div class="bg-gray-400 text-white font-bold w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mr-2 text-xs">0</div>
-                <h4 class="font-bold text-gray-700 text-sm">もう一度ガイダンスを聞く</h4>
-            </div>
-            <p class="text-xs text-gray-500 flex-1">案内をもう一度聞き直す場合は 0 を押してください。</p>
-            <span class="inline-block mt-2 bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded self-start">→ 最初のガイダンスに戻ります</span>
-        </div>
-
-    </div><!-- /第2層グリッド -->
-
-</div><!-- /mt-8 -->
-
-            </div>
+ 
+                <!-- 第2層 -->
+                <div class="layer-label">
+                    <span class="layer-badge yellow">第2層</span>
+                    <span class="layer-badge-desc">4を選択した後、ガイダンスに従って次の番号を押してください。</span>
+                </div>
+ 
+                <div class="ivr-grid-l2">
+ 
+                    <div class="ivr-card-l2">
+                        <div class="ivr-card-l2-header">
+                            <div class="num-badge yellow sm">1</div>
+                            <h4>新聞の記事内容について</h4>
+                        </div>
+                        <p>掲載記事の内容に関するご質問・ご意見</p>
+                    </div>
+ 
+                    <div class="ivr-card-l2">
+                        <div class="ivr-card-l2-header">
+                            <div class="num-badge yellow sm">2</div>
+                            <h4>新聞の購読・解約・配達</h4>
+                        </div>
+                        <p>紙の公明新聞の新規購読、解約、配達に関するご連絡</p>
+                    </div>
+ 
+                    <div class="ivr-card-l2">
+                        <div class="ivr-card-l2-header">
+                            <div class="num-badge yellow sm">3</div>
+                            <h4>その他のお問い合わせ</h4>
+                        </div>
+                        <p>上記以外のご用件はこちら。自動録音にて承ります。</p>
+                        <span class="ivr-tag yellow-light" style="margin-top:8px;align-self:flex-start;">→ 録音</span>
+                    </div>
+ 
+                    <div class="ivr-card-l2 gray-card">
+                        <div class="ivr-card-l2-header">
+                            <div class="num-badge gray sm">0</div>
+                            <h4 style="color:#374151;">もう一度ガイダンスを聞く</h4>
+                        </div>
+                        <p style="font-size:13px;color:#6b7280;">案内をもう一度聞き直す場合は 0 を押してください。</p>
+                        <span class="ivr-tag gray" style="margin-top:8px;align-self:flex-start;">→ 最初のガイダンスに戻ります</span>
+                    </div>
+ 
+                </div><!-- /第2層グリッド -->
+ 
+            </div><!-- /IVRフロー -->
+ 
         </section>
-        
-        <div class="text-center mt-12 text-sm text-gray-500">
-            &copy; Komeito. All Rights Reserved. (ワイヤーフレーム構成案)
-        </div>
-
+ 
+        <footer>&copy; Komeito. All Rights Reserved. (ワイヤーフレーム構成案)</footer>
+ 
     </main>
-
-    <script>
-        document.querySelectorAll('.accordion-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const content = button.nextElementSibling;
-                const icon = button.querySelector('.accordion-icon');
-                content.classList.toggle('open');
-                icon.classList.toggle('open');
-            });
-        });
-    </script>
+ 
 </body>
 </html>
+ 
