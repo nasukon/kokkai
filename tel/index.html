@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>あなたの声を公明党に | 公明党（構成案）</title>
+    <title>あなたの声を公明党に | 公明党</title>
     <style>
         /* ===== リセット・基本 ===== */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -45,11 +45,10 @@
             justify-content: space-between;
             align-items: center;
         }
-        .logo {
-            font-size: 22px;
-            font-weight: 900;
-            color: var(--primary);
-            letter-spacing: 0.15em;
+        .logo img {
+            height: 32px; /* ロゴのサイズを調整 */
+            width: auto;
+            vertical-align: middle;
         }
         nav { display: flex; gap: 24px; }
         nav a { font-size: 13px; font-weight: 600; color: #555; }
@@ -352,11 +351,11 @@
     <!-- ヘッダー -->
     <header>
         <div class="header-inner">
-            <div class="logo">KOMEITO</div>
+            <div class="logo">
+                <a href="https://www.komei.or.jp/"><img src="https://www.komei.or.jp/assets/img/common/logo.png" alt="公明党"></a>
+            </div>
             <nav>
-                <a href="#">ホーム</a>
-                <a href="#">ニュース</a>
-                <a href="#">政策</a>
+                <a href="https://www.komei.or.jp/">ホーム</a>
                 <a href="#" class="active">あなたの声を公明党に</a>
             </nav>
         </div>
@@ -542,7 +541,7 @@
 
         </section>
 
-        <footer>&copy; Komeito. All Rights Reserved. (ワイヤーフレーム構成案)</footer>
+        <footer>Copyright &copy; KOMEITO. All Rights Reserved.</footer>
 
     </main>
 
