@@ -15,7 +15,7 @@
             font-size: 16px;
         }
         a { color: inherit; text-decoration: none; }
- 
+
         /* ===== カラー変数 ===== */
         :root {
             --primary:        #005baa;
@@ -30,7 +30,7 @@
             --text-mid:       #4b5563;
             --text-light:     #6b7280;
         }
- 
+
         /* ===== ヘッダー ===== */
         header {
             background: #fff;
@@ -59,10 +59,10 @@
             border-bottom: 2px solid var(--primary);
             padding-bottom: 2px;
         }
- 
+
         /* ===== メインコンテナ ===== */
         main { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
- 
+
         /* ===== ページタイトル ===== */
         h1 {
             font-size: 28px;
@@ -73,7 +73,7 @@
             padding-bottom: 20px;
             margin-bottom: 32px;
         }
- 
+
         /* ===== リードテキスト ===== */
         .lead-box {
             background: #eef4fb;
@@ -84,7 +84,7 @@
             font-size: 14px;
             color: var(--text-mid);
         }
- 
+
         /* ===== セクション共通 ===== */
         section { margin-bottom: 48px; }
         h2 {
@@ -99,7 +99,7 @@
             gap: 10px;
         }
         h2 .h2-icon { font-size: 20px; }
- 
+
         /* ===== Section1: Webフォーム ===== */
         .web-form-card {
             background: #fff;
@@ -131,7 +131,7 @@
         }
         .btn-primary:hover { background: #004a8f; transform: translateY(-2px); }
         .btn-note { font-size: 12px; color: var(--text-light); margin-top: 10px; }
- 
+
         /* ===== Section3: 専用窓口 ===== */
         .contact-grid {
             display: grid;
@@ -139,7 +139,7 @@
             gap: 24px;
         }
         @media (max-width: 640px) { .contact-grid { grid-template-columns: 1fr; } }
- 
+
         .contact-card {
             background: #fff;
             border-radius: 12px;
@@ -153,7 +153,7 @@
         .contact-card.green { border-top: 4px solid #34d399; }
         .contact-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark); }
         .contact-card > p  { font-size: 14px; color: var(--text-mid); margin-bottom: 16px; }
- 
+
         .phone-box { border-radius: 8px; padding: 16px; text-align: center; }
         .phone-box.blue-bg  { background: #eff6ff; }
         .phone-box.green-bg { background: #f0fdf4; }
@@ -167,7 +167,7 @@
         .phone-number.green { color: #15803d; }
         .phone-number:hover { opacity: 0.8; text-decoration: underline; }
         .phone-hours { font-size: 12px; color: var(--text-light); margin-top: 6px; }
- 
+
         .btn-secondary {
             display: inline-block; margin-top: 12px;
             background: #fff; border: 1px solid #15803d; color: #15803d;
@@ -175,7 +175,7 @@
             border-radius: 6px; transition: background 0.2s;
         }
         .btn-secondary:hover { background: #f0fdf4; }
- 
+
         .btn-app {
             display: inline-block; margin-top: 12px;
             background: #fff; border: 1px solid var(--primary); color: var(--primary);
@@ -183,7 +183,7 @@
             border-radius: 6px; transition: background 0.2s;
         }
         .btn-app:hover { background: #eff6ff; }
- 
+
         /* ===== Section4: 代表電話 ===== */
         .tel-section {
             background: #fff;
@@ -207,9 +207,9 @@
             pointer-events: none;
         }
         .tel-section > * { position: relative; z-index: 1; }
- 
+
         .tel-section-sub { font-size: 14px; color: var(--text-light); margin-bottom: 28px; margin-top: -16px; }
- 
+
         .tel-number-box {
             background: #f8f9fa;
             border-radius: 10px;
@@ -236,7 +236,7 @@
             font-size: 11px; font-weight: 400;
             display: block; margin-top: 4px; opacity: 0.8;
         }
- 
+
         /* ===== IVRフローチャート ===== */
         .ivr-title {
             font-size: 16px; font-weight: 700;
@@ -245,7 +245,7 @@
             margin-bottom: 8px; color: var(--text-dark);
         }
         .ivr-desc { font-size: 14px; color: var(--text-light); margin-bottom: 20px; }
- 
+
         .layer-label { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
         .layer-badge {
             font-size: 12px; font-weight: 700;
@@ -254,7 +254,7 @@
         .layer-badge.blue   { background: var(--primary); color: #fff; }
         .layer-badge.yellow { background: var(--yellow); color: #1a1a1a; }
         .layer-badge-desc   { font-size: 12px; color: var(--text-light); }
- 
+
         /* 第1層グリッド */
         .ivr-grid {
             display: grid;
@@ -262,7 +262,7 @@
             gap: 12px; margin-bottom: 8px;
         }
         @media (max-width: 640px) { .ivr-grid { grid-template-columns: 1fr; } }
- 
+
         .ivr-card {
             border-radius: 8px; padding: 16px;
             display: flex; align-items: flex-start; gap: 12px;
@@ -278,7 +278,7 @@
             background: var(--gray-light);
             border: 1px dashed var(--gray-border);
         }
- 
+
         /* 丸数字バッジ */
         .num-badge {
             width: 32px; height: 32px; border-radius: 50%;
@@ -289,7 +289,7 @@
         .num-badge.yellow { background: var(--yellow); color: #1a1a1a; }
         .num-badge.gray   { background: #9ca3af; color: #fff; }
         .num-badge.sm     { width: 26px; height: 26px; font-size: 12px; }
- 
+
         .ivr-card-body h4 { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
         .ivr-card-body p  { font-size: 14px; color: var(--text-mid); }
         .ivr-tag {
@@ -300,14 +300,14 @@
         .ivr-tag.yellow       { background: var(--yellow); color: #1a1a1a; font-weight: 700; }
         .ivr-tag.yellow-light { background: #fef08a; color: #713f12; }
         .ivr-tag.gray         { background: #e5e7eb; color: #374151; }
- 
+
         .branch-badge {
             position: absolute; top: 8px; right: 8px;
             background: var(--yellow); color: #1a1a1a;
             font-size: 11px; font-weight: 700;
             padding: 2px 8px; border-radius: 999px;
         }
- 
+
         /* 矢印 */
         .ivr-arrow { display: flex; flex-direction: column; align-items: center; margin: 16px 0; }
         .ivr-arrow-line { width: 2px; height: 24px; background: var(--yellow); }
@@ -316,7 +316,7 @@
             font-size: 12px; font-weight: 700;
             padding: 4px 16px; border-radius: 999px;
         }
- 
+
         /* 第2層グリッド */
         .ivr-grid-l2 {
             display: grid; grid-template-columns: 1fr 1fr;
@@ -325,7 +325,7 @@
             border-left: 4px solid var(--yellow);
         }
         @media (max-width: 640px) { .ivr-grid-l2 { grid-template-columns: 1fr; } }
- 
+
         .ivr-card-l2 {
             background: var(--yellow-light);
             border: 1px solid var(--yellow-border);
@@ -339,7 +339,7 @@
         .ivr-card-l2-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
         .ivr-card-l2 h4 { font-size: 14px; font-weight: 700; color: var(--text-dark); }
         .ivr-card-l2 p  { font-size: 14px; color: var(--text-mid); }
- 
+
         /* ===== フッター ===== */
         footer {
             text-align: center; padding: 32px 20px;
@@ -348,7 +348,7 @@
     </style>
 </head>
 <body>
- 
+
     <!-- ヘッダー -->
     <header>
         <div class="header-inner">
@@ -361,16 +361,16 @@
             </nav>
         </div>
     </header>
- 
+
     <main>
- 
+
         <h1>お問い合わせ・ご意見</h1>
- 
+
         <div class="lead-box">
             党へのご意見・ご要望、各種お問い合わせを承っております。<br>
             皆様からお寄せいただいた貴重な声は、今後の政策立案や党活動の参考にさせていただきます。
         </div>
- 
+
         <!-- Section 1: Webフォーム -->
         <section>
             <div class="web-form-card">
@@ -382,12 +382,12 @@
                 </div>
             </div>
         </section>
- 
+
         <!-- Section 3: 専用窓口 -->
         <section>
             <h2><span class="h2-icon">📞</span>専用窓口のご案内</h2>
             <div class="contact-grid">
- 
+
                 <!-- 電子版 -->
                 <div class="contact-card blue">
                     <div>
@@ -401,7 +401,7 @@
                         <a href="https://www.komei.or.jp/newspaper-app/" target="_blank" class="btn-app">📱 電子版アプリ案内</a>
                     </div>
                 </div>
- 
+
                 <!-- 出版サービス -->
                 <div class="contact-card green">
                     <div>
@@ -414,37 +414,35 @@
                         <a href="https://komeiss.jp/" target="_blank" class="btn-secondary">🛒 Web注文サイトへ</a>
                     </div>
                 </div>
- 
+
             </div>
         </section>
- 
+
         <!-- Section 4: 代表電話 -->
         <section class="tel-section">
             <h2><span class="h2-icon">☎️</span>公明党本部 代表電話のご案内</h2>
             <p class="tel-section-sub">自動音声案内システムを導入しております。</p>
- 
+
             <div class="tel-number-box">
-                <p class="tel-number-label">公明党本部 代表</p>
                 <a href="tel:0333530111" class="tel-number-link">☎️ 03-3353-0111</a>
                 <div class="tel-hours-badge">
                     受付時間：全日 9:00〜22:00
                     <small>※将来的な24時間受付対応へ向けたシステム移行期間中のため、当面は上記時間での受付とさせていただきます。</small>
                 </div>
             </div>
- 
+
             <!-- IVRフローチャート -->
             <div>
                 <p class="ivr-title">音声ガイダンスの流れ</p>
-                <p class="ivr-desc">お電話がつながりましたら、音声案内に従ってご希望の番号を押してください。<br>（※録音にてお預かりしたご用件はAIによるテキスト化を行い、関係部局にお伝えいたします。）</p>
- 
+                <p class="ivr-desc">お電話がつながりましたら、音声案内に従ってご希望の番号を押してください。<br>※録音にてお預かりしたご用件はAIによるテキスト化を行い、関係部局にお伝えいたします。</p>
+
                 <!-- 第1層 -->
                 <div class="layer-label">
-                    <span class="layer-badge blue">第1層</span>
-                    <span class="layer-badge-desc">最初にガイダンスが流れます。続けてご希望の番号を押してください。</span>
+                    <span class="layer-badge blue">最初にガイダンスが流れます。続けてご希望の番号を押してください。</span>
                 </div>
- 
+
                 <div class="ivr-grid">
- 
+
                     <div class="ivr-card">
                         <div class="num-badge blue">1</div>
                         <div class="ivr-card-body">
@@ -453,7 +451,7 @@
                             <span class="ivr-tag blue">→ 録音</span>
                         </div>
                     </div>
- 
+
                     <div class="ivr-card">
                         <div class="num-badge blue">2</div>
                         <div class="ivr-card-body">
@@ -462,7 +460,7 @@
                             <span class="ivr-tag blue">→ 自動番号案内</span>
                         </div>
                     </div>
- 
+
                     <div class="ivr-card">
                         <div class="num-badge blue">3</div>
                         <div class="ivr-card-body">
@@ -471,7 +469,7 @@
                             <span class="ivr-tag blue">→ 自動番号案内</span>
                         </div>
                     </div>
- 
+
                     <div class="ivr-card yellow-card">
                         <span class="branch-badge" hidden>分岐あり</span>
                         <div class="num-badge yellow">4</div>
@@ -481,7 +479,7 @@
                             <span class="ivr-tag yellow">→ 次の分岐へ進む ↓</span>
                         </div>
                     </div>
- 
+
                     <div class="ivr-card">
                         <div class="num-badge blue">5</div>
                         <div class="ivr-card-body">
@@ -490,7 +488,7 @@
                             <span class="ivr-tag blue">→ 録音</span>
                         </div>
                     </div>
- 
+
                     <div class="ivr-card gray-card">
                         <div class="num-badge gray">0</div>
                         <div class="ivr-card-body">
@@ -498,24 +496,23 @@
                             <p style="font-size:13px;color:#6b7280;">案内をもう一度最初から聞き直す場合は 0</p>
                         </div>
                     </div>
- 
+
                 </div><!-- /第1層グリッド -->
- 
+
                 <!-- 矢印 -->
                 <div class="ivr-arrow">
                     <div class="ivr-arrow-line"></div>
                     <div class="ivr-arrow-label">4 を選んだ場合</div>
                     <div class="ivr-arrow-line"></div>
                 </div>
- 
+
                 <!-- 第2層 -->
                 <div class="layer-label">
-                    <span class="layer-badge yellow">第2層</span>
-                    <span class="layer-badge-desc">4を選択した後、ガイダンスに従って次の番号を押してください。</span>
+                    <span class="layer-badge yellow">4を選択した後、ガイダンスに従って次の番号を押してください。</span>
                 </div>
- 
+
                 <div class="ivr-grid-l2">
- 
+
                     <div class="ivr-card-l2">
                         <div class="ivr-card-l2-header">
                             <div class="num-badge yellow sm">1</div>
@@ -523,7 +520,7 @@
                         </div>
                         <p>掲載記事の内容に関するご質問・ご意見</p>
                     </div>
- 
+
                     <div class="ivr-card-l2">
                         <div class="ivr-card-l2-header">
                             <div class="num-badge yellow sm">2</div>
@@ -531,7 +528,7 @@
                         </div>
                         <p>紙の公明新聞の新規購読、解約、配達に関するご連絡</p>
                     </div>
- 
+
                     <div class="ivr-card-l2">
                         <div class="ivr-card-l2-header">
                             <div class="num-badge yellow sm">3</div>
@@ -540,7 +537,7 @@
                         <p>上記以外のご用件はこちら。自動録音にて承ります。</p>
                         <span class="ivr-tag yellow-light" style="margin-top:8px;align-self:flex-start;">→ 録音</span>
                     </div>
- 
+
                     <div class="ivr-card-l2 gray-card">
                         <div class="ivr-card-l2-header">
                             <div class="num-badge gray sm">0</div>
@@ -549,17 +546,16 @@
                         <p style="font-size:13px;color:#6b7280;">案内をもう一度聞き直す場合は 0 を押してください。</p>
                         <span class="ivr-tag gray" style="margin-top:8px;align-self:flex-start;">→ 最初のガイダンスに戻ります</span>
                     </div>
- 
+
                 </div><!-- /第2層グリッド -->
- 
+
             </div><!-- /IVRフロー -->
- 
+
         </section>
- 
+
         <footer>&copy; Komeito. All Rights Reserved. (ワイヤーフレーム構成案)</footer>
- 
+
     </main>
- 
+
 </body>
 </html>
- 
